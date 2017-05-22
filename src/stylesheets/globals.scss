@@ -1,0 +1,150 @@
+$snow-white: #d3d5e3;
+$primaryColour: #90A4AE; // blueGrey300
+$secondaryColour:  #B0BEC5; // blueGrey200
+$buttonColour: #2196F3; // blue500
+
+body, html {
+	margin: 0;
+	font-family: 'Roboto';
+	height: 100%;
+}
+
+a {
+	color: $primaryColour;
+
+	&:hover {
+		color: $secondaryColour;
+	}
+	&:active {
+		color: #546E7A;
+	}
+}
+
+label {
+	font-size: 0.8rem;
+	color: $primaryColour;
+}
+
+#react-container {
+	height: 100%;
+
+	p#LoadingFirebase {
+		color: $secondaryColour;
+		margin: 0;
+		padding-top: 50%;
+		text-align: center;
+	}
+	
+	#App {
+		padding-top: 50px; // height of AppBar
+		height: calc(100% - 50px); // height: 100%;
+
+		#AppBar {
+			position: fixed !important;
+			top: 0;
+
+			#AppIconButton {
+				position: absolute !important;
+			}
+
+			h1 {
+				font-size: 19px !important;
+				line-height: 50px !important;
+				// margin: 0px 2rem 0 0 !important;
+				text-align: center !important;
+
+				&:after {
+					background: transparent url('/assets/images/pin-ffffff.png') no-repeat;
+					background-size: contain;
+					content: " ";
+					display: inline-block;
+					margin-left: 0.25rem;
+					vertical-align: -0.1rem;
+					width: 1rem;
+					height: 1rem;
+				}
+			}
+
+			& > div {
+				margin-top: 2px !important;
+			}
+
+			// AppBar saving indicator on right
+			& > div:nth-child(3) {
+				position: absolute;
+				top: 0;
+				right: 5%;
+				margin: 0 !important;
+			}
+
+			// Icon button (hamburger menu) not in use, so hidden
+			& > button { 
+				display: none !important;
+				border: 1px solid red !important;
+				margin-top: 2px !important;
+			}
+		}
+
+		#AppComponent,
+		#AppTabsContainer {
+			height: 100%;
+		}
+
+		.appTabsContentContainer {
+			height: calc(100% - 48px);
+		}
+		.appTabsContentContainer > div:first-child {
+			height: 100%;
+		}
+
+		.BottomButtonContainer {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			margin-top: 2rem;
+			text-align: center;
+
+			.AddExistingDialogue,
+			.NewDialoguePrompt {
+				display: inline-block;
+			}
+
+			button {
+				line-height: 1.1 !important;
+				padding: 1rem 0.5rem !important;
+				height: auto !important;
+			}
+		}
+
+		.NotificationBar {
+			transform: translate(-50%, -350%) !important;
+			transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, 
+				visibility 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms !important;
+
+			& > div {
+				background: $buttonColour !important; 
+				box-shadow: rgba(0, 0, 0, 0.247059) 0px 14px 45px, 
+					rgba(0, 0, 0, 0.219608) 0px 10px 18px;
+				line-height: 1.15 !important;
+				padding: 35px !important;
+				text-align: center !important;
+				width: 100% !important;
+
+				span {
+					color: #fff !important;
+
+					&:after {
+						background: transparent url('/assets/images/complete-white.png') no-repeat;
+						background-size: contain;
+						content: " ";
+						display: block;
+						margin: 15px auto;
+						width: 2rem;
+						height: 2rem;
+					}
+				}
+			}
+		}
+	}
+}
