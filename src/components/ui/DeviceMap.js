@@ -196,6 +196,7 @@ export default class DeviceMap extends Component {
 
 
 	onMapLoad(mapElement) {
+		console.log(mapElement)
 		mapElement.fitBounds(this.bounds);
 	}
 
@@ -229,7 +230,6 @@ export default class DeviceMap extends Component {
 					isDragging = {this.state.isDraggingMarker}
 					bounds = {this.bounds}
 					onCurrentMarkerLoaded = {this.onCurrentMarkerLoaded.bind(this)}
-					onMapLoad={this.onMapLoad.bind(this)} 
 					onMapClick={this.handleMapClick}
 					onMarkerClick = { this.handleMarkerClick.bind(this) }
 					onMarkerClose = { this.handleMarkerClose.bind(this) }

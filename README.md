@@ -21,17 +21,27 @@ All the icons used in the app are from the Material UI library. A reference shee
 
 ### TODO
 
-**Katie**
-- Center map after moving markers
 
 **Danilo**
-Features
+
+Dialogue screen
+- Add viz in dialogue view
+- Connect DB to visualizations
+- Realtime viz?
+
+Device screen
 - Order of new dialogue
-- Offline Image upload functionality
-- Confirm link label
 - Rename dialogues functionality
+
+
+General
+- iPad testing
 - Show something for empty dialogues in player
-    
+
+**Can**
+- Query db for responses of a defined dialogue
+
+
 **Parked**
 - Add authentication in CMS app (so that users only see their content)
 - Add offline indicator

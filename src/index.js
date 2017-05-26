@@ -42,6 +42,15 @@ const initDatabase = () => {
 	window.storage = firebase.storage()
 
 	store.dispatch(getData());
+
+	// TODO CAN
+	// list all the responses of dialogue 0
+	// https://firebase.google.com/docs/reference/js/firebase.database.Query#ref
+	
+
+
+
+
 }
 
 initDatabase();
