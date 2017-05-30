@@ -24,7 +24,7 @@ class DialoguePlayer extends Component {
 		if(link == -1) {
 			let currentDialogueIndex = this.state.currentDialogueIndex+1;
 			currentDialogueIndex %= this.props.dialogues.length;
-			console.log(currentDialogueIndex, this.props.dialogues.length);
+			console.log(currentDialogueIndex, this.props.dialogues);
 
 
 			this.setState({
@@ -42,7 +42,7 @@ class DialoguePlayer extends Component {
 	render() {
 
 		const dialogue = this.props.dialogues[this.state.currentDialogueIndex];
-		console.log(dialogue.cards)
+
 		const cards = Object.keys(dialogue.cards).map( 
 			(cardId) => {
 				return this.props.allCards[cardId] 
@@ -67,7 +67,7 @@ class DialoguePlayer extends Component {
 
 		return (
 			<div className="DialoguePlayer">
-				<h2>{currentCard.title}</h2>
+				{currentCard.title ? <h2>{currentCard.title}</h2> : <h2 style={{color:"#ddd"}}>No text</h2>}
 				<div className="DialoguePlayerButtons">
 					{ answers }
 				</div>

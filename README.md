@@ -28,7 +28,6 @@ Record card and link creation
 
 Device screen
 - Order of new dialogue
-- Rename dialogues functionality
 
 Dialogue screen
 - Add viz in dialogue view
@@ -37,7 +36,6 @@ Dialogue screen
 
 General
 - iPad testing
-- Show something for empty dialogues in player
 
 **Can**
 - Query db for responses of a defined dialogue
@@ -183,5 +181,6 @@ Dialogue Editor
 - Change card title
 - Change card answers
 - Add/remove links
-
+- Switch image/text
+- Upload image
 
