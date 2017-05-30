@@ -2,7 +2,7 @@ import { Component } from "react";
 import { List, ListItem } from "material-ui/List";
 import { Link } from "react-router";
 import update from "immutability-helper";
-import Paper from "material-ui/Paper";
+import TextField from "material-ui/TextField";
 
 import IconButton from "material-ui/IconButton";
 import FlatButton from "material-ui/FlatButton";
@@ -32,24 +32,13 @@ class DeviceEditor extends Component {
 
 		this.state = {
 			existingDialoguePrompt: false,
-			previewPromptOpen: false,
-			snackbarOpen: false
+			renamingDialogue: null,
+			renamePrompt: false,
+			previewPrompt: false
 		};
 	}
 
-	onLeave(evt) {
-		evt.preventDefault();
-		evt.stopPropagation();
-		console.log(e);
-	}
-
-	onEnd(evt) {
-		evt.preventDefault();
-		evt.stopPropagation();
-	}
-
 	onSortEnd({ oldIndex, newIndex }) {
-		console.log(oldIndex, newIndex)
 		var dialoguesArray = Object.keys(this.props.dialogues).map((key)=> {
 			// make a copy
 			return Object.assign({}, this.props.dialogues[key]);
@@ -70,7 +59,18 @@ class DeviceEditor extends Component {
 			dialoguesArray[i].order = i;
 			newDialogues[dialoguesArray[i].id] = dialoguesArray[i]; 
 		}
-		this.props.onChangeDialogues(newDialogues);
+		this.props.onChangeDialoguesOrder(newDialogues);
+
+	}
+
+	onRenamedDialogue() {		
+		
+		const title = this.refs["renameTextField"].input.value;
+		this.props.onRenameDialogue(this.state.renamingDialogue, title);
+		this.setState({
+			renamingDialogue: null,
+			renamePrompt: false
+		});
 
 	}
 
@@ -82,7 +82,7 @@ class DeviceEditor extends Component {
 		// if the device is new it may not have dialogues set up, in that case create an empty object first
 		if (this.props.device.dialogues == null) this.props.device.dialogues = {};
 
-		this.props.onChangeDialogues(
+		this.props.onChangeDialoguesOrder(
 			update(this.props.device.dialogues, {
 				[dialogueId]: { $set: { id: dialogueId, order: newOrder } }
 			})
@@ -95,29 +95,29 @@ class DeviceEditor extends Component {
 
 	onClosePreview() {
 		this.setState({
-			previewPromptOpen: false,
+			previewPrompt: false,
 			previewedDialogue: null
 		});
 	}
 
 	onPreviewDialogue(dialogue) {
 		this.setState({
-			previewPromptOpen: true,
+			previewPrompt: true,
 			previewedDialogue: dialogue
 		});
 	}
 
-	onEditDialogue(dialogue) {
+	onRenameDialogue(dialogue) {
 		this.setState({
-			editPromptOpen: true,
-			editedDialogue: dialogue
+			renamePrompt: true,
+			renamingDialogue: dialogue
 		});
 	}
 
 	onCloseEdit() {
 		this.setState({
-			editPromptOpen: false,
-			editedDialogue: null
+			renamePrompt: false,
+			renamingDialogue: null
 		});
 	}
 
@@ -129,9 +129,21 @@ class DeviceEditor extends Component {
 		let deviceDialoguesList;
 		let dialoguePrompt;
 
+		let getCancelButton = (key) => (
+			<FlatButton
+				label="Cancel"
+				secondary={true}
+				onTouchTap={()=> {
+					this.setState({ [key]: false })
+				}}
+			/>
+		)
+
+
 		if (!props.device.dialogues) {
 			deviceDialoguesList = <p>There are no dialogues on this device</p>;
 		} else {
+
 			const DragHandle = SortableHandle(() => (
 				<div className="handle"><DragIcon /></div>
 			));
@@ -154,7 +166,7 @@ class DeviceEditor extends Component {
 						</Link>
 						<div className="ignoreHandle buttons">
 							<EditIcon
-								onTouchTap={this.onEditDialogue.bind(this)}
+								onTouchTap={()=>this.onRenameDialogue(dialogue)}
 							/>
 							<DeleteIcon
 								onTouchTap={() =>
@@ -199,20 +211,14 @@ class DeviceEditor extends Component {
 		if (!props.allDialogues) {
 			dialoguePrompt = <br />;
 		} else {
+			
 			const allDialogues = Object.keys(props.allDialogues).map(d => {
 				return props.allDialogues[d];
 			});
-			const actions = [
-				<FlatButton
-					label="Cancel"
-					secondary={true}
-					onTouchTap={() =>
-						this.setState({ existingDialoguePrompt: false })}
-				/>
-			];
 
 			dialoguePrompt = (
 				<div className="AddExistingDialogue">
+				
 					<FlatButton
 						label="Add existing dialogue"
 						labelColor={blue500}
@@ -226,21 +232,22 @@ class DeviceEditor extends Component {
 								200
 							)}
 					/>
+
 					<Dialog
 						title="Select a dialogue"
 						modal={true}
 						open={this.state.existingDialoguePrompt}
-						actions={actions}
+						actions={[getCancelButton("existingDialoguePrompt")]}
 						autoScrollBodyContent={true}
 					>
+
 						<div className="AllDialoguesList">
 							<List>
 								{allDialogues.map((dialogue, i) => (
 									<ListItem
 										primaryText={dialogue.title}
 										key={i}
-										onClick={() =>
-											this.onChosenDialogue(dialogue.id)}
+										onClick={() => this.onChosenDialogue(dialogue.id)}
 									/>
 								))}
 							</List>
@@ -252,6 +259,7 @@ class DeviceEditor extends Component {
 
 		return (
 			<div id="DialogueAdmin">
+
 				<div id="DialogueAdminHeader">
 					<div className="DialogueAdminDescript">
 						<h2>Content on this pin</h2>
@@ -265,12 +273,13 @@ class DeviceEditor extends Component {
 						label="Update this pin"
 					/>
 				</div>
+			
 				{deviceDialoguesList}
 
 				<div className="BottomButtonContainer">
 					{dialoguePrompt}
 					<DialoguePreview
-						open={this.state.previewPromptOpen}
+						open={this.state.previewPrompt}
 						allCards={this.props.allCards}
 						dialogues={[this.state.previewedDialogue]}
 						onClosePreview={this.onClosePreview.bind(this)}
@@ -280,6 +289,24 @@ class DeviceEditor extends Component {
 						onSubmit={this.props.onAddNewDialogue}
 					/>
 				</div>
+
+				<Dialog
+						title="Rename dialogue"
+						modal={true}
+						open={this.state.renamePrompt}
+						actions={[
+							getCancelButton("renamePrompt"),
+							<FlatButton
+									label="Submit"
+									primary={true}
+									onTouchTap={this.onRenamedDialogue.bind(this)}
+							/>
+							]}
+				>
+
+					<TextField hintText="Hint Text" defaultValue={this.state.renamingDialogue ? this.state.renamingDialogue.title : ""} ref="renameTextField" />
+
+				</Dialog>
 			</div>
 		);
 	}

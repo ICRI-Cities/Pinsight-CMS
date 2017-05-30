@@ -91,6 +91,10 @@ export const dialogues = (state=null,action) => {
 		newState = update(state, { [action.dialogue.id]: { cards: { $set: action.dialogue.cards }} });
 		return newState;
 
+		case C.CHANGE_DIALOGUE_TITLE:
+		newState = update(state, { [action.dialogue.id]: { title: { $set: action.title }} });
+		return newState;
+
 		case C.DELETE_CARD:
 		let next = Object.assign({}, state);
 		delete next[action.dialogueId].cards[action.cardId];

@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import DeviceEditor from '../ui/DeviceEditor'
 import {save, changeCardAnswer, changeCardTitle, changeDialogueTitle} from '../../actions'
-import {addNewDialogueToDevice, deleteDialogueFromDevice, changeDialoguesOrder, setDeviceToRefresh} from '../../actions'
+import {renameDialogue, addNewDialogueToDevice, deleteDialogueFromDevice, changeDialoguesOrder, setDeviceToRefresh} from '../../actions'
 
 const mapStateToProps = (state, props) => {
 	const device = state.devices[parseInt(props.params.device)];
@@ -37,7 +37,13 @@ const mapDispatchToProps = (dispatch, props) => {
 			dispatch(deleteDialogueFromDevice(props.params.device, dialogueId))
 		},
 
-		onChangeDialogues(dialogues) {
+		onRenameDialogue(dialogue, title) {
+			console.log(dialogue, title)
+			dispatch(renameDialogue(dialogue, title));
+		},
+
+
+		onChangeDialoguesOrder(dialogues) {
 			dispatch(changeDialoguesOrder(dialogues, props.params.device));
 		},
 

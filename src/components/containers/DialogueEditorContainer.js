@@ -5,7 +5,6 @@ import {
 	needsUpdate,
 	changeCard,
 	addNewCard,
-	saveDialogue,
 	changeCardAnswer,
 	changeCardTitle,
 	addImageToCard,
@@ -45,28 +44,21 @@ const mapDispatchToProps = (dispatch, props) => {
 			dispatch(changeDialogueTitle(dialogueId, cardIndex, value));
 		},
 
-		onSave({ dialogueId, dialogue }) {
-			dispatch(saveDialogue(dialogue));
-		},
-
+	
 		onChangedCard({ cardIndex, title, answers, isImage, imageFilename, imageURL }) {
-					console.log(imageFilename, imageURL)
-
 			dispatch(changeCard(cardIndex, title, answers,  isImage, imageFilename, imageURL));
 		},
 
 		onAddCard({order}) {
-			dispatch(
-				addNewCard(deviceId, dialogueId, order)
-			);
+			dispatch(addNewCard(deviceId, dialogueId, order));
 		},
 
 		onDeleteCard({ cardId, order }) {
 			var confirmDialogue = confirm("If you delete this card, you will not be able to get it back. Delete this card?");
 			if (confirmDialogue == true) {
-			    dispatch(deleteCard(dialogueId, cardId, order));
+				dispatch(deleteCard(dialogueId, cardId, order));
 			} else {
-			    // Do nothing
+				// Do nothing
 			} 			
 		}
 	};
@@ -74,4 +66,4 @@ const mapDispatchToProps = (dispatch, props) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(
 	DialogueEditorDirect
-);
+	);

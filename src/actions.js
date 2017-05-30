@@ -221,26 +221,24 @@ export const changeDevicePosition = (deviceIndex, lat, lng) => {
 
 // DIALOGUES
 
-export const saveDialogue = (dialogue) => {
 
-	return (dispatch, getState) => {
-		
+export const renameDialogue = (dialogue, title) => {
+	return (dispatch) => {
+
 		dispatch(isUpdating(true));
-
-		const cards = getState().cards;
-		let updates = {};
-
-		updates['/dialogues/'+dialogue.id] = dialogue;
-		
-		Object.keys(dialogue.cards).map((l)=> {	
-			updates['/cards/'+l] = cards[l];
+		window.database.ref("dialogues/"+dialogue.id+"/title").set(title).then(()=> {
+			dispatch(isUpdating(false));
+			dispatch({
+				type: C.CHANGE_DIALOGUE_TITLE,
+				dialogue,
+				title
+			});	
 		});
 
-		window.database.ref().update(updates).then(() => {
-			dispatch(isUpdating(false));
-		})
-	}
+	};
+
 }
+
 
 export const deleteDialogue = (dialogue) => {
 	return (dispatch) => {
@@ -394,6 +392,7 @@ export const addNewCard = (deviceId, dialogueId, order) => {
 				// update the dialogue cards
 				window.database.ref("/dialogues/"+dialogueId+"/cards").set(cards);
 
+				
 				// all done
 				dispatch({
 					type: C.ADD_CARD,

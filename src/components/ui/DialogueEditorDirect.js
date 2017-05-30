@@ -23,6 +23,7 @@ class DialogueEditorDirect extends Component {
 			linkingTargetCardId: null,
 			linkingAnswerIndex: null
 		};
+
 	}
 
 
@@ -30,7 +31,6 @@ class DialogueEditorDirect extends Component {
 		var h = document.querySelector(".CardEditor").offsetHeight;
 		var w = document.querySelector(".CardEditor").offsetWidth;
 		document.querySelector(".EndCard").style.height = h+"px";
-		// document.querySelector(".EndCard").style.width = w*.75+"px";
 
 		this.drawArrows();	
 		window.addEventListener("resize", this.drawArrows.bind(this));
@@ -257,6 +257,7 @@ class DialogueEditorDirect extends Component {
 		let card = this.props.allCards[this.state.selectedCardId];
 		let answers = card.answers;
 		answers[this.state.linkingAnswerIndex].link = linkedCardId;
+
 		this.props.onChangedCard({
 			cardIndex: this.state.selectedCardId,
 			title: this.props.allCards[this.state.selectedCardId].title,
