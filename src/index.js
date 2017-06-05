@@ -46,10 +46,11 @@ const initDatabase = () => {
 	// TODO CAN
 	// list all the responses of dialogue 0
 	// https://firebase.google.com/docs/reference/js/firebase.database.Query#ref
-	
-
-
-
+	var ref = firebase.database().ref("responses");
+	var diaId = "-KiUUjvfWQQt4f-AfKNs";
+	ref.orderByChild("dialogueId").equalTo(diaId).on("child_added", function(snapshot) {
+  		console.log("printing query data: " + snapshot.key);
+	});
 
 }
 
