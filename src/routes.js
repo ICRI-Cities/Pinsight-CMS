@@ -6,10 +6,12 @@ import {Whoops404} from './components/Whoops404'
 import DeviceEditorContainer from './components/containers/DeviceEditorContainer'
 import DialogueEditorContainer from './components/containers/DialogueEditorContainer'
 import Home from './components/containers/HomeContainer'
-
+import TestList from './components/ui/TestList'
 
 const routes = (
 	<Router history={hashHistory}>
+	<Route path="testlist" component={TestList}/>
+
 	<Route path="/" component = {AppContainer}>
 
 		<IndexRoute component={Home} />

@@ -35,16 +35,12 @@ const mapStateToProps = (state, props) => {
 };
 
 const mapDispatchToProps = (dispatch, props) => {
+
 	let deviceId = props.params.device;
-	let cardIndex = props.params.card;
 	let dialogueId = props.params.dialogue;
 
 	return {
-		onChangeDialogueTitle(value) {
-			dispatch(changeDialogueTitle(dialogueId, cardIndex, value));
-		},
-
-	
+		
 		onChangedCard({ cardIndex, title, answers, isImage, imageFilename, imageURL }) {
 			dispatch(changeCard(cardIndex, title, answers,  isImage, imageFilename, imageURL));
 		},
@@ -54,12 +50,11 @@ const mapDispatchToProps = (dispatch, props) => {
 		},
 
 		onDeleteCard({ cardId, order }) {
-			var confirmDialogue = confirm("If you delete this card, you will not be able to get it back. Delete this card?");
-			if (confirmDialogue == true) {
+			// var confirmDialogue = confirm("If you delete this card, you will not be able to get it back. Delete this card?");
+			// if (confirmDialogue == true) {
 				dispatch(deleteCard(dialogueId, cardId, order));
-			} else {
-				// Do nothing
-			} 			
+			// }
+			
 		}
 	};
 };

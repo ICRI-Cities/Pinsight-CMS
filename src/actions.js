@@ -4,18 +4,30 @@ import * as firebase from 'firebase'
 
 export const getData = () => {
 	return (dispatch) => {
-		dispatch(hasLoaded(false));
-		window.database
-		.ref('/')
-		.once('value')
-		.then((snapshot) => {
+
+		if(window.DEBUG && localStorage["redux-store"]) {
 			dispatch({
 				type: C.GET_DATA,
-				value: snapshot.val()
+				value: JSON.parse(localStorage["redux-store"])
 			});
-			dispatch(isUpdating(false));
 			dispatch(hasLoaded(true));
-		});	
+
+		} else {
+
+			dispatch(hasLoaded(false));
+			window.database
+			.ref('/')
+			.once('value')
+			.then((snapshot) => {
+				localStorage.setItem('redux-store', JSON.stringify(snapshot.val()));
+				dispatch({
+					type: C.GET_DATA,
+					value: snapshot.val()
+				});
+				dispatch(isUpdating(false));
+				dispatch(hasLoaded(true));
+			});	
+		}
 
 	}
 }
@@ -72,18 +84,11 @@ export const setDeviceToRefresh = (deviceIndex) => {
 export const addNewDialogueToDevice = (deviceIndex, title) => {
 
 	return (dispatch, getState) => {
-		var deviceDialogues = getState().devices[deviceIndex].dialogues;
-		
-		var deviceDialogues = getState().devices[deviceIndex].dialogues;
-		for(var i in deviceDialogues) {
-			deviceDialogues[i].order+=1;
-		}
-		
-		changeDialoguesOrder(deviceDialogues, deviceIndex);
 
-		// create new key and dialogues
-		var newCardRef =  window.database.ref('/cards/').push();
-		var newDialogueRef = window.database.ref('/dialogues/').push();
+		
+		// create and add new dialogue with a new empty card
+		const newCardRef =  window.database.ref('/cards/').push();
+		const newDialogueRef = window.database.ref('/dialogues/').push();
 
 		let newCard = {
 			id: newCardRef.key,
@@ -120,30 +125,50 @@ export const addNewDialogueToDevice = (deviceIndex, title) => {
 			order: 0
 		}
 
+		// move up the order of existing dialogues
+		const deviceDialogues = getState().devices[deviceIndex].dialogues;
+		let orderedDialouges = {};
+		for(var i in  deviceDialogues) {
+			orderedDialouges[i] = {order:deviceDialogues[i].order+1};
+			updates['devices/'+deviceIndex+'/dialogues/'+i] =  {order:deviceDialogues[i].order+1};
+		}
+
+
 		dispatch(isUpdating(true));	
 		window.database.ref().update(updates).then(()=>{
 			// dispatch(hasUpdated());	
-			dispatch(isUpdating(false));	
+			dispatch(isUpdating(false));
+
+
+			dispatch(isUpdating(false));
+			dispatch({
+				type: C.CHANGE_DEVICE_DIALOGUES,
+				deviceIndex,
+				dialogues : deviceDialogues
+			});
+
+			dispatch({
+				type: C.ADD_CARD,
+				newCard
+			})
+
+			dispatch({
+				type: C.ADD_DIALOGUE,
+				dialogue: newDialogue
+			})
+
+			dispatch({
+				type: C.ADD_DIALOGUE_DEVICE,
+				deviceIndex, 
+				dialogue: {
+					id: newDialogueRef.key,
+					order: 0
+				}
+			})
+
 		});
 
-		dispatch({
-			type: C.ADD_CARD,
-			newCard
-		})
-
-		dispatch({
-			type: C.ADD_DIALOGUE,
-			dialogue: newDialogue
-		})
-
-		dispatch({
-			type: C.ADD_DIALOGUE_DEVICE,
-			deviceIndex, 
-			dialogue: {
-				id: newDialogueRef.key,
-				order: 0
-			}
-		})
+		
 
 	}
 }
@@ -171,9 +196,15 @@ export const changeDialoguesOrder = (dialogues, deviceIndex) => {
 		
 		dispatch(isUpdating(true));
 		
+		let orderedDialouges = {};
+
+		for(let i in dialogues) {
+			orderedDialouges[i] = {order: dialogues[i].order}
+		}
+
 		window.database
 		.ref('devices/'+deviceIndex+'/dialogues')
-		.set(dialogues)
+		.set(orderedDialouges)
 
 		dispatch(()=> {
 			// dispatch(hasUpdated());	
@@ -181,7 +212,7 @@ export const changeDialoguesOrder = (dialogues, deviceIndex) => {
 			dispatch({
 				type: C.CHANGE_DEVICE_DIALOGUES,
 				deviceIndex,
-				dialogues
+				dialogues : orderedDialouges
 			});
 		})
 
@@ -393,6 +424,8 @@ export const addNewCard = (deviceId, dialogueId, order) => {
 				window.database.ref("/dialogues/"+dialogueId+"/cards").set(cards);
 
 				
+				dispatch(isUpdating(false));
+
 				// all done
 				dispatch({
 					type: C.ADD_CARD,
@@ -421,6 +454,14 @@ export const deleteCard = (dialogueId, cardId, order) => {
 
 	return (dispatch) => {
 
+
+		dispatch({
+			type: C.DELETE_CARD,
+			dialogueId,
+			order,
+			cardId
+		})
+
 		dispatch(isUpdating(true))
 
 		let updates = {};
@@ -430,13 +471,11 @@ export const deleteCard = (dialogueId, cardId, order) => {
 
 			let cards = s.val();
 
+
 			for(let c in cards) {
 
 				let card = cards[c];
 
-				if(card.order > order) {
-					updates["cards/"+card.id + "/order"] = card.order -1;
-				}
 				if(card.id == cardId) {
 					updates["cards/"+card.id] = null
 				}
@@ -446,14 +485,13 @@ export const deleteCard = (dialogueId, cardId, order) => {
 
 			}
 
-
-			window.database.ref().update(updates)
-
+			// remove card reference in dialogue's cards list
+			updates["/dialogues/"+dialogueId+"/cards/"+cardId] = null;
+			window.database.ref().update(updates);
 
 			// change order of other cards
 			window.database.ref("/dialogues/"+dialogueId).once("value", (value) => {
 
-				window.database.ref("/dialogues/"+dialogueId+"/cards/"+cardId).set(null);
 
 				var cards = value.val().cards;
 				delete cards[cardId];
@@ -467,20 +505,6 @@ export const deleteCard = (dialogueId, cardId, order) => {
 
 				// all done
 				dispatch(isUpdating(false));
-				dispatch({
-					type: C.CHANGE_DIALOGUE,
-					dialogue: {
-						id: dialogueId,
-						cards: cards
-					}
-				})
-
-				dispatch({
-					type: C.DELETE_CARD,
-					dialogueId,
-					cardId
-				})
-
 
 			});
 
@@ -493,7 +517,7 @@ export const deleteCard = (dialogueId, cardId, order) => {
 
 
 export const changeCard = (cardIndex, title, answers, isImage, imageFilename, imageURL) => {
-	console.log(imageFilename, imageURL);
+
 	return (dispatch) => {
 
 		dispatch(isUpdating(true))

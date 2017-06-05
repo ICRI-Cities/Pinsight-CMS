@@ -11,17 +11,15 @@ class LinkHandle extends Component {
 
 	render() {
 
-
 		let props = this.props;
 
 		let style = {
-			left: props.linkingAnswerIndex == 0 ? "-0.5rem" : "auto",
-			right: props.linkingAnswerIndex == 1 ? "0.5rem" : "auto",
-			background: blue500, 
-			//(props.card && props.linkingTargetCardId == props.card.id) ? blue500 : "#333"
+			left: props.mystyle.left ? props.mystyle.left : "auto",
+			right: props.mystyle.right ? props.mystyle.right : "auto",
+			background: blue500
 		}
 	
-		return ( <div className="LinkHandle" style={style}  onTouchTap={() => props.onLinkHandleClicked(props.card.id)} > <LinkIcon color="#fff"/> </div>	);
+		return ( <div className="LinkHandle" style={style}  onTouchTap={props.onTouchTap} > <LinkIcon color="#fff"/> </div>	);
 	}
 
 }

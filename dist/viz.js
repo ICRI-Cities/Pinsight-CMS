@@ -208,7 +208,7 @@ const next = () => {
 
 	timelinePosition++;
 	if(timelinePosition < history.length) {
-		setTimeout(next.bind(this), history[timelinePosition].time * 10)
+		setTimeout(next.bind(this), history[timelinePosition].time * 5)
 	}
 
 

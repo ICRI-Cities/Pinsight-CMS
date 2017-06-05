@@ -16,14 +16,13 @@ import {getData} from './actions'
 
 injectTapEventPlugin()
 
-const initialState = (localStorage["redux-store"]) ? JSON.parse(localStorage["redux-store"]) : {};
 
 const store = storeFactory({isUpdating:true});
-window.React = React;
 
 // TODO this shouldn't be global :)
-window.DEBUG = DEBUG;
 window.store = store;
+window.DEBUG = false;
+window.React = React;
 
 
 
@@ -49,9 +48,9 @@ const initDatabase = () => {
 	
 
 
-
-
 }
+
+
 
 initDatabase();
 

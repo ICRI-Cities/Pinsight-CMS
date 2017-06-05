@@ -11,6 +11,11 @@ export default class CardContentBox extends Component {
 			isFocused: false, 
 			currentValue: props.card.title 
 		}
+
+		this.handleChange = this.handleChange.bind(this);
+		this.handleFocus = this.handleFocus.bind(this);
+		this.handleBlur = this.handleBlur.bind(this);
+
 	}
 
 	
@@ -48,9 +53,9 @@ export default class CardContentBox extends Component {
 				<div className="CardContentTab" style={{display: isImage ? "none" : "block"}} >
 					<textarea 
 						onTouchTap={ this.props.onTouchTap}
-						onChange={ this.handleChange.bind(this)}
-						onFocus={ this.handleFocus.bind(this)}
-						onBlur={ this.handleBlur.bind(this)}
+						onChange={ this.handleChange}
+						onFocus={ this.handleFocus}
+						onBlur={ this.handleBlur}
 						value={this.state.currentValue}
 						rows="3"
 					/>

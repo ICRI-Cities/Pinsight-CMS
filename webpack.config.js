@@ -2,16 +2,10 @@ var webpack = require("webpack");
 var isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
-	debug: !isProduction,
+	debug: false,
 	devtool: 'inline-source-map',
 	entry: "./src/index.js",
-	plugins: [
-	new webpack.DefinePlugin({
-		'process.env': {
-			'NODE_ENV': JSON.stringify('production')
-		}
-	})
-	],
+	plugins: [],
 	output: {
 		path: "dist/assets",
 		filename: "bundle.js",

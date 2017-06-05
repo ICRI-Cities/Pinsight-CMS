@@ -56,7 +56,6 @@ export const devices = (state=null,action) => {
 		return update(state, {[action.deviceIndex]: {"dialogues": {$set:action.dialogues}}});
 
 		case C.CHANGE_DEVICE_POSITION:
-		console.log("old state",state[action.deviceIndex].position)
 		let newPosition = {
 			lat: action.lat,
 			lng: action.lng
@@ -98,6 +97,9 @@ export const dialogues = (state=null,action) => {
 		case C.DELETE_CARD:
 		let next = Object.assign({}, state);
 		delete next[action.dialogueId].cards[action.cardId];
+		for (var key in next[action.dialogueId].cards) {
+			if(next[action.dialogueId].cards[key].order > action.order) next[action.dialogueId].cards[key].order-=1;
+		}
 		return next;
 
 		return newState;

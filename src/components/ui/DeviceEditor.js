@@ -139,8 +139,9 @@ class DeviceEditor extends Component {
 			/>
 		)
 
+		console.log(dialogues)
 
-		if (!props.device.dialogues) {
+		if (dialogues.length == 0) {
 			deviceDialoguesList = <p>There are no dialogues on this device</p>;
 		} else {
 
@@ -153,7 +154,7 @@ class DeviceEditor extends Component {
 					<li className="ListItem">
 						<DragHandle />
 						<Link
-							style={{ fontSize: ".8rem", marginLeft: 10 }}
+							style={{ marginLeft: 10 }}
 							activeClassName="active"
 							to={
 								"/dialogues/" +
@@ -221,7 +222,6 @@ class DeviceEditor extends Component {
 				
 					<FlatButton
 						label="Add existing dialogue"
-						labelColor={blue500}
 						secondary={true}
 						onTouchTap={() =>
 							setTimeout(
@@ -267,7 +267,6 @@ class DeviceEditor extends Component {
 					</div>
 					<RaisedButton
 						id="PushToDeviceButton"
-						labelColor="#fff"
 						backgroundColor={blue500}
 						onClick={this.props.onRefreshDevice}
 						label="Update this pin"

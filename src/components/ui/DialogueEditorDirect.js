@@ -1,17 +1,25 @@
 import { Component } from "react";
+import { Link } from "react-router";
+
 import IconButton from "material-ui/IconButton";
 import BackIcon from "material-ui/svg-icons/navigation/arrow-back";
-import { Link } from "react-router";
-import DialoguePreview from "./DialoguePreview";
-import LinkHandle from "./LinkHandle"
-import CardEditorDirect from "./CardEditorDirect";
 import PlusIcon from "material-ui/svg-icons/content/add-circle";
 import PlayIcon from "material-ui/svg-icons/av/play-arrow";
 import FlatButton from "material-ui/FlatButton";
 import {blue500, blueGrey200, blueGrey800} from 'material-ui/styles/colors'
-import * as d3 from "d3";
+
+import CardEditorDirect from "./CardEditorDirect";
+import DialoguePreview from "./DialoguePreview";
+import {TransitionMotion, spring} from 'react-motion';
+
+import * as d3 from 'd3';
+
+
+const MARGIN_TOP = 100;
+const CARD_HEIGHT = 500;
 
 class DialogueEditorDirect extends Component {
+
 	constructor(props) {
 		super(props);
 
@@ -20,185 +28,171 @@ class DialogueEditorDirect extends Component {
 			isLinking: false,
 			selectedCardId: null,
 			linkingCardId: null,
-			linkingTargetCardId: null,
 			linkingAnswerIndex: null
 		};
 
+		this.onLinking= this.onLinking.bind(this)
+		this.onAddCard= this.onAddCard.bind(this)
+		this.onDeleteCard= this.onDeleteCard.bind(this)
+		this.onSelectCard= this.onSelectCard.bind(this)
+		this.onLinkHandleClicked= this.onLinkHandleClicked.bind(this)
+		this.onPreviewOpen= this.onPreviewOpen.bind(this)
+		this.onPreviewClose= this.onPreviewClose.bind(this)
+		this.drawArrows= this.drawArrows.bind(this)
+
+		this.linkPaths = {};
+		this.linkPathFn = d3.line().x(function(d) { return d.x; }).y(function(d) { return d.y; });
+
 	}
+
+
+	// ----------------- LIFE CYCLE
 
 
 	componentDidMount() {
-		var h = document.querySelector(".CardEditor").offsetHeight;
-		var w = document.querySelector(".CardEditor").offsetWidth;
-		document.querySelector(".EndCard").style.height = h+"px";
+		const cardEditor = document.querySelector(".CardEditor");
+		const h = cardEditor.offsetHeight;
+		const w = cardEditor.offsetWidth;
+		// this.drawArrows();
+		// window.addEventListener("resize", this.drawArrows);
+		window.requestAnimationFrame(this.drawArrows);
 
-		this.drawArrows();	
-		window.addEventListener("resize", this.drawArrows.bind(this));
 	}
 
-	drawArrows() {
-		let svg = d3.select(this.refs.svg);
-
-		svg.selectAll(".arrowpath").remove();
-		svg.attr("height",  document.querySelector(".DialogueEditorDirect").offsetHeight);
-		this.props.cards.forEach(card => {
-
-			var source = d3
-			.select("#card" + card.id + " #answer0")
-			.node()
-			.getBoundingClientRect();
-
-			var t0 = card.answers[0].link;
-			var t1 = card.answers[1].link;
-			let endCard = d3.select(".EndCard").node().getBoundingClientRect();
-
-			let target0;
-			let sy =  source.top + source.height *.2;
-			let ty;
-
-			if (t0 != -1) {
-				target0 = d3
-				.select("#card" + t0)
-				.node()
-				.getBoundingClientRect();
-				ty =  target0.top + target0.height *.2;
-			} else {
-				target0 = endCard;
-				ty =  target0.top + target0.height *.5;
-			}
-
-			
-			this.appendLine(
-				card,
-				svg,
-				source.left,
-				sy + window.scrollY,
-				ty + window.scrollY,
-				false
-				);
-
-			source = d3
-			.select("#card" + card.id + " #answer1")
-			.node()
-			.getBoundingClientRect();
-
-
-			let target1;
-			if (t1 != -1) {
-				target1 = d3
-				.select("#card" + t1)
-				.node()
-				.getBoundingClientRect();
-				ty =  target1.top + target1.height *.2;
-			} else {
-				target1 = endCard;
-				ty =  target1.top + target1.height *.5;
-			}
-
-			sy =  source.top + source.height *.2;
-
-			this.appendLine(
-				card,
-				svg,
-				source.right,
-				sy + window.scrollY,
-				ty + window.scrollY,
-				true
-				);
-		});
-	}
-
-	appendLine(card, svg, sx, sy, ty, isRight) {
-
-
-		svg
-		.append("path")
-		.attr("d", d => {
-			return this.getLine(
-				[{x: sx,y: sy},{x: sx + (isRight? 40:-40) ,y: ty}],
-				isRight
-				);
-		})
-		.attr("marker-end", "url(#lightarrow)")
-		.style("stroke-width", 2)
-		.attr("class", "arrowpath")
-		.attr("data-index", isRight ? 1 : 0)
-		.attr("id", "path" + card.id)
-		.style("fill", "none")
-		.style("stroke", blueGrey200 );
-	}
-
-	getLine(points, isRight) {
-		const source = points[0];
-		const target = points[1];
-		const isAbove = target.y < source.y;
-
-		let cornerX = source.x + (isRight ? 80 : -80) ;
-		// calculating distance between cards to push link away from edge
-		let push = (target.y - source.y) * 0.02;
-		cornerX += push * (isRight ? 1 : -1) * (isAbove ? -1 : 1);
-		// target.x += isRight ? 10 : -10;
-		return ("M " +source.x +" " +source.y +" H " +cornerX +" L " +cornerX +" " +target.y +" L " +target.x +" " +target.y);
-	}
 
 	componentDidUpdate(prevProps, prevState) {
-		// scroll to new card if just added
-		if (this.props.cards.length != prevProps.cards.length) {
-			let newCardId;
-			for (var i = 0; i < this.props.cards.length; i++) {
-				let c = this.props.cards[i];
-				let cc;
-				for (var k = 0; k < prevProps.cards.length; k++) {
-					if (prevProps.cards[k] == c) {
-						cc = prevProps.cards[k];
-						break;
-					}
-				}
-				if (cc == null) {
-					newCardId = c.id;
-					break;
-				}
-			}
-			// let scrollToCard =document.querySelector("#card"+newCardId);
-			// if(scrollToCard) {
-			// //	this.doScrolling(scrollToCard.getBoundingClientRect().top-50, 500)
-			// }
-		}
+		let h = this.getY(this.props.cards.length + 1);
+		d3.select(this.svg).attr("height", h);
 
-		this.drawArrows();
-
-		let svg = d3.select(this.refs.svg);
-		let selectedCardId = this.state.selectedCardId;
-		let linkingAnswerIndex = this.state.linkingAnswerIndex;
-		if (selectedCardId) {
-			svg
-			.selectAll("svg .arrowpath")
-			.attr("class", function(d) {
-				var n = d3.select(this);
-				var isLinking =
-				n.attr("id") == "path" + selectedCardId &&
-				+n.attr("data-index") == linkingAnswerIndex;
-				return isLinking ? "blinking arrowpath" : "arrowpath";
-			})
-			.style("stroke", function(d) {
-				var n = d3.select(this);
-				var isLinking =
-				n.attr("id") == "path" + selectedCardId &&
-				+n.attr("data-index") == linkingAnswerIndex;
-				return n.attr("id") == "path" + selectedCardId ? (isLinking ? blue500 : blueGrey800) : blueGrey200;
-			})
-			.attr("marker-end", function(d) {
-				var n = d3.select(this);
-				var isLinking =
-				n.attr("id") == "path" + selectedCardId &&
-				+n.attr("data-index") == linkingAnswerIndex;
-				return n.attr("id") == "path" + selectedCardId ? (isLinking ? "url(#bluearrow)" : "url(#darkarrow)") : "url(#lightarrow)";
-			});
-		}
 	}
 
 
+	drawArrows() {
+		let svg = d3.select(this.svg);
+		this.drawArrow(svg, 0);
+		this.drawArrow(svg, 1);
+		window.requestAnimationFrame(this.drawArrows);
+
+	}
+
+	drawArrow(svg, index) {
+
+
+		let selectedCardId = this.state.selectedCardId;
+		let linkingAnswerIndex = this.state.linkingAnswerIndex;
+
+		let paths = svg
+		.selectAll(".arrowpath.links"+index)
+		.data(this.props.cards, (card)=>card.id)
+		
+		paths
+		.exit()
+		.remove();
+
+		paths
+		.enter()
+		.append("path")
+		.merge(paths)
+		.each(function(card){
+			const isSelected = card.id  == selectedCardId;
+			const isLinking = isSelected &&  index == linkingAnswerIndex;
+			const el = d3.select(this);
+			el.attr("class","arrowpath links"+index + (isLinking ? " blinking" : ""))	
+			el.style("stroke",  isLinking  ? blue500 : blueGrey200);
+			el.attr("marker-end", isLinking  ? "url(#bluearrow)" :"url(#lightarrow)");
+		})
+		.datum((card)=>this.getMyPoints(card, index) || [])
+		.attr("d", this.linkPathFn)
+
+	}
+
+
+	getMyPoints(card, answerId) {
+		const topOffset = this.svg.getBoundingClientRect().top
+		const endCard = d3.select(".EndCard").node().getBoundingClientRect();
+
+		let source = this.getRect(card.id + " #answer"+answerId + " .LinkHandle");
+		if(!source) return;
+		let sy = source.top + source.height *.5 - topOffset;
+		let t = card.answers[answerId].link;
+		let target = (t != -1) ? this.getRect(t) : endCard;
+		if(!target) return;
+
+		const ty =  target.top + target.height *.5  - topOffset;
+		const isRight = answerId == 1;
+		const sx = isRight ? source.right : source.left;
+
+		const isAbove = target.top < source.top;
+
+		let cornerX = isRight ? 60 : -60;
+
+		// calculating distance between cards to push link away from edge
+		let push = (target.top - source.top) * 0.02;
+		cornerX += push *(isRight ? 1 : -1) 
+
+		const arcWidth = 20;
+
+		let pnts = [
+		{
+			x:sx,
+			y:sy
+		},
+		{
+			x:sx + cornerX + (!isRight ? arcWidth : -arcWidth),
+			y:sy
+		},
+		{
+			x:sx + cornerX,
+			y:sy + (isAbove ? -arcWidth : arcWidth)
+		},
+		{
+			x:sx + cornerX,
+			y:ty + (isAbove ? arcWidth : -arcWidth)
+		},
+		{
+			x:sx + cornerX + (!isRight ? arcWidth : -arcWidth),
+			y:ty
+		},
+		{
+			x:sx ,
+			y:ty
+		}
+		];
+
+		return pnts;
+
+	}
+
+
+	getRect(id) {
+		let node =  d3
+		.select("#card" + id)
+		.node()
+
+		return node ? node.getBoundingClientRect() : null;
+	}
+
 	// ----------------- HANDLERS
+	
+	onAddCard(obj) {
+		this.resetSelectCard();
+		this.props.onAddCard(obj)
+	}
+
+	onDeleteCard(obj) {
+		this.resetSelectCard();
+		this.props.onDeleteCard(obj)
+
+	}
+
+	resetSelectCard() {
+		this.setState({
+			isLinking: false,
+			selectedCardId: null,
+			linkingCardId: null,
+			linkingAnswerIndex: null
+		});
+	}
 
 
 	onPreviewOpen() {
@@ -214,46 +208,32 @@ class DialogueEditorDirect extends Component {
 	}
 
 	onSelectCard(id) {
-		this.setState({
-			selectedCardId: id
-		});
+		if (this.state.isLinking) {
+			if(id != this.state.selectedCardId) this.onLinkHandleClicked(id);
+		} else {
+			this.setState({
+				selectedCardId: id
+			});
+		}
 	}
 
 	onLinking(cardId, answerIndex) {
+
 		if (this.state.isLinking) {
 			this.resetLinking();
 		} else {
 			this.setState({
 				isLinking: true,
+				selectedCardId: cardId,
 				linkingCardId: cardId,
-				linkingTargetCardId: this.props.allCards[cardId].answers[
-				answerIndex
-				].link,
 				linkingAnswerIndex: answerIndex
 			});
 		}
-	}
 
-	doScrolling(elementY, duration) { 
-		var startingY = window.pageYOffset  
-		var diff = elementY - startingY  
-		var start
-
-		// Bootstrap our animation - it will get called right before next frame shall be rendered.
-		window.requestAnimationFrame(function step(timestamp) {
-			if (!start) start = timestamp
-				var time = timestamp - start
-			var percent = Math.min(time / duration, 1)
-
-			window.scrollTo(0, startingY + diff * percent)
-
-			if (time < duration) {
-				window.requestAnimationFrame(step)
-			}
-		})
 	}
 
 	onLinkHandleClicked(linkedCardId) {
+
 		let card = this.props.allCards[this.state.selectedCardId];
 		let answers = card.answers;
 		answers[this.state.linkingAnswerIndex].link = linkedCardId;
@@ -263,6 +243,7 @@ class DialogueEditorDirect extends Component {
 			title: this.props.allCards[this.state.selectedCardId].title,
 			answers
 		});
+
 		this.resetLinking();
 	}
 
@@ -270,112 +251,168 @@ class DialogueEditorDirect extends Component {
 		this.setState({
 			isLinking: false,
 			linkingCardId: null,
-			linkingTargetCardId: null,
 			linkingAnswerIndex: null
 		});
 	}
 
+
+	getY(n) {
+		return n * CARD_HEIGHT + MARGIN_TOP;
+	}
+
 	render() {
+
 		let svgStyle = {
 			position: "absolute",
 			pointerEvents: "none",
 			top: 0
 		};
 
+		const props = this.props;
+
+		let cards =  props.cards.map((card,i)=>{
+			return({
+				...card,
+				y: this.getY(i)
+			})
+		});
+		const endCard = {endCard:true, y: this.getY(cards.length)}
+		cards.push(endCard);
+		this.drawArrows();
+
 		return (
 			<div className="DialogueEditorDirect">
 
 			<div className="DialogueEditorMenu">	
-				<FlatButton
-					style={{ color: "#333" }}
-					label="preview"
-					primary="true"
-					icon={<PlayIcon color="#333" />}
-					onTouchTap={this.onPreviewOpen.bind(this)}
-				/>
+			<FlatButton
+			style={{ color: "#333" }}
+			label="preview"
+			primary={true}
+			icon={<PlayIcon color="#333" />}
+			onTouchTap={this.onPreviewOpen}
+			/>
 			</div>
 
-				<div className="DialogueHierarchy" ref="editorContainer">
+			<div className="DialogueWrapper" style={{height: this.getY(cards.length)}} >
 
-				{ this.props.cards.map((card, i) => {
-					return (
-						<CardEditorDirect
-							{...this.props}
-							index={i}
-							isLinking={this.state.isLinking}
-							selectedCardId={this.state.selectedCardId}
-							linkingAnswerIndex={
-								this.state.linkingAnswerIndex
-							}
-							linkingCardId={this.state.linkingCardId}
-							linkingTargetCardId={
-								this.state.linkingTargetCardId
-							}
-							onLinking={this.onLinking.bind(this)}
-							onSelectCard={this.onSelectCard.bind(this)}
-							onLinkHandleClicked={this.onLinkHandleClicked.bind(this)}
-							card={card}
-						/>
-					);
-				})}
+			<TransitionMotion
+			willEnter={(d)=>{
+				return {scale: 1.3, y: d.data.y}
+			}}
+			willLeave={(d)=>{
+				return {scale: spring(.2), y: d.data.y}
+			}}
+			styles={cards.map((card,i) => ({
+				key: card.endCard ? "end" : "key"+card.id,
+				data: {card, index: i, y:card.y},
+				style: {scale: spring(1), y:spring(card.y)},
+			}))}>
 
-			<div className="CardEditor EndCard">
-			 {this.state.isLinking &&
-			 	<div>
-			 	
-				<LinkHandle linkingTargetCardId={this.state.linkingTargetCardId} linkingAnswerIndex= {0} card={{id:-1}} onTouchTap={() => this.props.onLinkHandleClicked(props.card.id)}/> 
-				<LinkHandle linkingTargetCardId={this.state.linkingTargetCardId} linkingAnswerIndex= {1} card={{id:-1}} onTouchTap={() => this.props.onLinkHandleClicked(props.card.id)}/> 
+
+			{ (interpolatedStyles) =>
+
+				<div className="CardsContainer">
+				{
+					interpolatedStyles.map(s => {
+						return this.getComponent(s);
+					})
+				}
 				</div>
 			}
-			 Next dialogue 
-			 </div>
 
-				<svg style={svgStyle} width="100%" height="5000" ref="svg">
-					<defs>
-						<marker
-							id="darkarrow"
-							markerWidth="5"
-							markerHeight="5"
-							viewBox="0 -5 10 10"
-							orient="auto"
-						>
-							<path d="M0,-5L10,0L0,5" fill={blueGrey800} />
-						</marker>
+			</TransitionMotion>
 
-						<marker
-							id="lightarrow"
-							markerWidth="5"
-							markerHeight="5"
-							viewBox="0 -5 10 10"
-							orient="auto"
-						>
-							<path d="M0,-5L10,0L0,5" fill={blueGrey200} />
-						</marker>
 
-						<marker
-							id="bluearrow"
-							markerWidth="5"
-							markerHeight="5"
-							viewBox="0 -5 10 10"
-							orient="auto"
-						>
-							<path d="M0,-5L10,0L0,5" fill={blue500} />
-						</marker>
 
-					</defs>
-				</svg>
+			<svg ref={(svg)=> {this.svg = svg;} } style={svgStyle} width="100%" height="5000">
+			<defs>
+			<marker
+			id="darkarrow"
+			markerWidth="5"
+			markerHeight="5"
+			viewBox="0 -5 10 10"
+			orient="auto"
+			>
+			<path d="M0,-5L10,0L0,5" fill={blueGrey800} />
+			</marker>
 
-				<DialoguePreview
-					open={this.state.isPreviewing}
-					allCards={this.props.allCards}
-					dialogues={[this.props.dialogue]}
-					onClosePreview={this.onPreviewClose.bind(this)}
-				/>
+			<marker
+			id="lightarrow"
+			markerWidth="5"
+			markerHeight="5"
+			viewBox="0 -5 10 10"
+			orient="auto"
+			>
+			<path d="M0,-5L10,0L0,5" fill={blueGrey200} />
+			</marker>
 
-				</div>
+			<marker
+			id="bluearrow"
+			markerWidth="5"
+			markerHeight="5"
+			viewBox="0 -5 10 10"
+			orient="auto"
+			>
+			<path d="M0,-5L10,0L0,5" fill={blue500} />
+			</marker>
+
+			</defs>
+
+
+
+			</svg>
+
+
+			<DialoguePreview
+			open={this.state.isPreviewing}
+			allCards={this.props.allCards}
+			dialogues={[this.props.dialogue]}
+			onClosePreview={this.onPreviewClose}
+			/>
+
 			</div>
-		);
+			</div>
+			);
 	}
+
+
+	getComponent(s) {
+
+		let props = this.props;
+
+		if(s.data.card.endCard) {
+			return (
+				<div 
+				key="keyEnd"  
+				className="CardEditor EndCard"
+				onTouchTap={()=> this.onSelectCard(-1)}
+				style = {{
+					position: "absolute",
+					transform: "translate3d(0px, "+s.style.y+"px, 0px)"
+				}}
+				>
+				Next dialogue
+				</div>)
+		} else {
+			return (
+				<CardEditorDirect
+				index={s.data.index}
+				key={s.key} 
+				card={s.data.card}
+				style={s.style}
+				linkingAnswerIndex={this.state.linkingAnswerIndex}
+				linkingCardId={this.state.linkingCardId}
+				selectedCardId={this.state.selectedCardId}
+				onLinking={this.onLinking}
+				onSelectCard={this.onSelectCard}
+				onLinkHandleClicked={this.onLinkHandleClicked}
+				onAddCard={this.onAddCard}
+				onDeleteCard={this.onDeleteCard}
+				onChangedCard={props.onChangedCard}
+				/>
+				)
+		}
+	} 
 }
 
 export default DialogueEditorDirect;
