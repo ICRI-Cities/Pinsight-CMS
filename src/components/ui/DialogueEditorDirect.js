@@ -41,7 +41,7 @@ class DialogueEditorDirect extends Component {
 		this.drawArrows= this.drawArrows.bind(this)
 
 		this.linkPaths = {};
-		this.linkPathFn = d3.line().x(function(d) { return d.x; }).y(function(d) { return d.y; });
+		this.linkPathFn = d3.line().x(function(d) { return d.x; }).y(function(d) { return d.y; }).curve(d3.curveBasis);
 
 	}
 
@@ -53,30 +53,32 @@ class DialogueEditorDirect extends Component {
 		const cardEditor = document.querySelector(".CardEditor");
 		const h = cardEditor.offsetHeight;
 		const w = cardEditor.offsetWidth;
-		// this.drawArrows();
-		// window.addEventListener("resize", this.drawArrows);
-		window.requestAnimationFrame(this.drawArrows);
 
+		console.log("mount")
+		d3.select(this.svg).attr("height", this.getY(this.props.cards.length + 1));
+
+		window.requestAnimationFrame(this.drawArrows)
 	}
 
+	componentWillUpdate(nextProps, nextState) {
+	}
 
 	componentDidUpdate(prevProps, prevState) {
-		let h = this.getY(this.props.cards.length + 1);
-		d3.select(this.svg).attr("height", h);
-
+		d3.select(this.svg).attr("height", this.getY(this.props.cards.length + 1));
 	}
 
 
 	drawArrows() {
-		let svg = d3.select(this.svg);
-		this.drawArrow(svg, 0);
-		this.drawArrow(svg, 1);
-		window.requestAnimationFrame(this.drawArrows);
+		this.drawArrow(0);
+		this.drawArrow(1);
+		window.requestAnimationFrame(this.drawArrows)
 
 	}
 
-	drawArrow(svg, index) {
+	drawArrow(index) {
 
+		if(!this.svg) return;
+		let svg = d3.select(this.svg);
 
 		let selectedCardId = this.state.selectedCardId;
 		let linkingAnswerIndex = this.state.linkingAnswerIndex;
@@ -130,7 +132,7 @@ class DialogueEditorDirect extends Component {
 		let push = (target.top - source.top) * 0.02;
 		cornerX += push *(isRight ? 1 : -1) 
 
-		const arcWidth = 20;
+		const arcWidth = 40;
 
 		let pnts = [
 		{
@@ -143,11 +145,19 @@ class DialogueEditorDirect extends Component {
 		},
 		{
 			x:sx + cornerX,
+			y:sy
+		},
+		{
+			x:sx + cornerX,
 			y:sy + (isAbove ? -arcWidth : arcWidth)
 		},
 		{
 			x:sx + cornerX,
 			y:ty + (isAbove ? arcWidth : -arcWidth)
+		},
+		{
+			x:sx + cornerX,
+			y:ty
 		},
 		{
 			x:sx + cornerX + (!isRight ? arcWidth : -arcWidth),
@@ -278,7 +288,6 @@ class DialogueEditorDirect extends Component {
 		});
 		const endCard = {endCard:true, y: this.getY(cards.length)}
 		cards.push(endCard);
-		this.drawArrows();
 
 		return (
 			<div className="DialogueEditorDirect">
@@ -311,7 +320,7 @@ class DialogueEditorDirect extends Component {
 
 			{ (interpolatedStyles) =>
 
-				<div className="CardsContainer">
+				<div className={"CardsContainer" + (this.state.isLinking ? " isLinking" : "")}>
 				{
 					interpolatedStyles.map(s => {
 						return this.getComponent(s);

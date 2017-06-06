@@ -520,7 +520,6 @@ export const changeCard = (cardIndex, title, answers, isImage, imageFilename, im
 
 	return (dispatch) => {
 
-		dispatch(isUpdating(true))
 
 		if(imageURL == null) imageURL= "";
 		if(imageFilename == null) imageFilename= "";
@@ -536,17 +535,38 @@ export const changeCard = (cardIndex, title, answers, isImage, imageFilename, im
 			answers
 		})
 
-		const updates = {
-			cardIndex,
-			title,
-			isImage,
-			imageFilename,
-			imageURL,
-			answers
+		// delay updates to the database
+
+		if(changeCardTimeout) clearInterval(changeCardTimeout);
+		if(new Date() - lastChanged < 1000) {
+			changeCardTimeout = setTimeout(()=>{
+				changeCardOnDB(dispatch, cardIndex,title,isImage,imageFilename,imageURL,answers) 
+			}, 1000);
+		} else {
+			changeCardOnDB(dispatch, cardIndex,title,isImage,imageFilename,imageURL,answers) 
 		}
 
-		window.database.ref('/cards/'+cardIndex).update(updates).then(()=>dispatch(isUpdating(false)));
-
 	}
+
+}
+
+let changeCardTimeout;
+let lastChanged;
+
+const changeCardOnDB = (dispatch, cardIndex,title,isImage,imageFilename,imageURL,answers)=> {
+
+		dispatch(isUpdating(true))
+	
+	lastChanged = new Date();
+	const updates = {
+		cardIndex,
+		title,
+		isImage,
+		imageFilename,
+		imageURL,
+		answers
+	}
+
+	window.database.ref('/cards/'+cardIndex).update(updates).then(()=>dispatch(isUpdating(false)));
 
 }

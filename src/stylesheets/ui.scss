@@ -152,19 +152,19 @@ $snow-whiter: #EBECF5;
 			margin: 0 auto;
 			width: 600px;
 
+			
+
 			textarea:focus, input:focus {
 				outline: none;
 			}
 
+		
 			.CardEditor {
 				background: #fff;
 				width: 100%;
 				border-radius: 10px;
-				transition: box-shadow .2s ease;
-
-				&.selected {
-					box-shadow: 0 2px 5px rgba(0,0,0,.2);
-				}
+				box-shadow: 0 2px 5px rgba(0,0,0,.2);
+				
 				&.EndCard {
 					height: 300px;
 					display: flex;
@@ -322,6 +322,12 @@ $snow-whiter: #EBECF5;
 					}
 				}
 			} 
+
+			&.isLinking {
+				.CardEditor:hover {
+					cursor:pointer;
+				}
+			}
 		}
 	}
 

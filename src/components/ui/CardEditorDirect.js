@@ -84,22 +84,27 @@ export default class CardEditorDirect extends Component {
 		this.props.onDeleteCard({ cardId: this.props.card.id, order: this.props.index })
 	}
 
+	getClassName() {
+		let s = "CardEditor";
+		if(this.props.selectedCardId == this.props.card.id) s+= " selected";
+		return s;
+	}
+
 	render() {
 		let component;
 		let props = this.props;
 		const ai = props.answerIndex;
 		let deleteButton = (
 			<IconButton
-				
+
 			style={{position: "absolute", right: 0, width:30, height:30, padding:0}}
 			className="CardDeleteButton"
 			onTouchTap={this.onDeleteCard}
 			>
-				<DeleteIcon color="black" />
+			<DeleteIcon color="black" />
 			</IconButton>
 			);
 
-		const isSelected =  props.selectedCardId == props.card.id;
 		return (
 			
 
@@ -107,56 +112,55 @@ export default class CardEditorDirect extends Component {
 				position: "absolute",
 				width: "100%",
 				transform: "translate3d(0px, "+ props.style.y +"px, 0px) scale("+props.style.scale+")"
-				}}
-				onTouchTap = {this.onSelectCard}
+			}}
+			onTouchTap = {this.onSelectCard}
 			>
 			{ props.index > 0 && deleteButton }
 
 			
-			<div className={ "CardEditor" + (isSelected? " selected":"")}
-			id={"card" + props.card.id} > 
+			<div className={this.getClassName()} id={"card" + props.card.id} > 
 
 
 			<div className="FieldContainer">
-				<CardContentBox card={props.card} 
-					onSelectCard = {props.onSelectCard}
-					onChangeImage= {this.onChangeImage} 
-					onChangeImageMode= {this.onChangeImageMode} 
-					onChangeTitle={this.onChangeTitle} 
-					onImageAddedToCard={this.props.onImageAddedToCard}
-					/>
+			<CardContentBox card={props.card} 
+			onSelectCard = {props.onSelectCard}
+			onChangeImage= {this.onChangeImage} 
+			onChangeImageMode= {this.onChangeImageMode} 
+			onChangeTitle={this.onChangeTitle} 
+			onImageAddedToCard={this.props.onImageAddedToCard}
+			/>
 			</div>
 
 
 			<div className="ButtonEditor">
 			{ props.card.answers.map((answer, i) => (
 				<div key={i} className="ButtonCombo">
-					<ButtonCombo
-						card = {props.card}
-						onSelectCard = {props.onSelectCard}
-						linkingAnswerIndex = {props.linkingAnswerIndex}
-						onChangeCardAnswer = {this.onChangeCardAnswer}
-						answerIndex={i}
-						onLinking = {props.onLinking}
-						label={answer.label}
-						link={answer.link}
-					/>
-					</div>
+				<ButtonCombo
+				card = {props.card}
+				onSelectCard = {props.onSelectCard}
+				linkingAnswerIndex = {props.linkingAnswerIndex}
+				onChangeCardAnswer = {this.onChangeCardAnswer}
+				answerIndex={i}
+				onLinking = {props.onLinking}
+				label={answer.label}
+				link={answer.link}
+				/>
+				</div>
 				))}
 			</div>
 			</div>
 			
 
-				<FlatButton
-					label="Add Card"
-					primary={true}
-					style={{position:"absolute", color: "#333",left:"50%", bottom:0, transform:"translate(-50%,120%)" }}
-					onTouchTap={()=> {props.onAddCard({order: props.index })} }
-					icon={<PlusIcon color="#333" />}
-					/>
+			<FlatButton
+			label="Add Card"
+			primary={true}
+			style={{position:"absolute", color: "#333",left:"50%", bottom:0, transform:"translate(-50%,120%)" }}
+			onTouchTap={()=> {props.onAddCard({order: props.index })} }
+			icon={<PlusIcon color="#333" />}
+			/>
 
 
 			</div>
-		);
+			);
 	}
 }

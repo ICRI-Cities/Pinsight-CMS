@@ -50,10 +50,10 @@ const mapDispatchToProps = (dispatch, props) => {
 		},
 
 		onDeleteCard({ cardId, order }) {
-			// var confirmDialogue = confirm("If you delete this card, you will not be able to get it back. Delete this card?");
-			// if (confirmDialogue == true) {
+			var confirmDialogue = confirm("If you delete this card, you will not be able to get it back. Delete this card?");
+			if (confirmDialogue == true) {
 				dispatch(deleteCard(dialogueId, cardId, order));
-			// }
+			}
 			
 		}
 	};
