@@ -12,6 +12,7 @@ import {changeCard} from './actions'
 import {dialogues} from './store/reducers'
 import C from './constants'
 import {getData} from './actions'
+import './stylesheets/ui.scss'
 
 
 injectTapEventPlugin()

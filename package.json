@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --progress --colors",
-    "build": "NODE_ENV=production webpack -p && firebase deploy"
+    "start": "webpack-dev-server --hot --inline --progress --colors",
+    "build": "webpack -p && firebase deploy"
   },
   "author": "",
   "license": "ISC",
@@ -13,16 +13,18 @@
     "autoprefixer-loader": "^3.2.0",
     "babel-cli": "^6.18.0",
     "babel-loader": "^6.2.10",
+    "babel-preset-env": "^1.5.1",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
     "css-loader": "^0.26.1",
     "json-loader": "^0.5.4",
     "node-sass": "^4.2.0",
+    "react-hot-loader": "^3.0.0-beta.7",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",
-    "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2"
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
     "d3": "^4.8.0",

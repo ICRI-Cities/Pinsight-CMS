@@ -2,6 +2,8 @@ import {hashHistory} from 'react-router'
 import C from './constants'
 import * as firebase from 'firebase'
 
+
+
 export const getData = () => {
 	return (dispatch) => {
 
@@ -30,6 +32,36 @@ export const getData = () => {
 		}
 
 	}
+}
+
+export const getResponses = (dialogueId) => {
+	
+	return (dispatch) => {
+
+		dispatch(isUpdating(true));
+		
+		if(window.DEBUG && localStorage["redux-store-responses"]) {
+			dispatch({
+				type: C.GET_RESPONSES,
+				value: JSON.parse(localStorage["redux-store-responses"])
+			});
+			dispatch(isUpdating(false));
+
+		} else {
+			window.database
+			.ref('responses')
+			.orderByChild("dialogueId").equalTo(dialogueId).once("value").then((snapshot) => {
+				// localStorage["redux-store-responses"] = JSON.stringify(snapshot.val());
+				dispatch({
+					type: C.GET_RESPONSES,
+					dialogueId,
+					value: snapshot.val() || {}
+				});
+				dispatch(isUpdating(false));
+			});
+		}
+	}
+
 }
 
 
@@ -390,9 +422,10 @@ export const addNewCard = (deviceId, dialogueId, order) => {
 		// get new card key
 		let newCardRef =  window.database.ref('/cards/').push();
 		let newCard = {
-			"id": newCardRef.key,
-			"title":"",
-			"answers": [
+			id: newCardRef.key,
+			createdAt: firebase.database.ServerValue.TIMESTAMP,
+			title:"",
+			answers: [
 			{
 				"label":"",
 				"link":-1
@@ -555,7 +588,7 @@ let lastChanged;
 
 const changeCardOnDB = (dispatch, cardIndex,title,isImage,imageFilename,imageURL,answers)=> {
 
-		dispatch(isUpdating(true))
+	dispatch(isUpdating(true))
 	
 	lastChanged = new Date();
 	const updates = {

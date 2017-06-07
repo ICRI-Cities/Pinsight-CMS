@@ -158,13 +158,17 @@ $snow-whiter: #EBECF5;
 				outline: none;
 			}
 
-		
+
 			.CardEditor {
 				background: #fff;
 				width: 100%;
 				border-radius: 10px;
 				box-shadow: 0 2px 5px rgba(0,0,0,.2);
 				
+				&.isHoverable:hover {
+					border: 2px solid $buttonColour;
+				}
+
 				&.EndCard {
 					height: 300px;
 					display: flex;
@@ -574,6 +578,20 @@ $snow-whiter: #EBECF5;
 	animation-timing-function: linear;
 }
 
+.node {
+
+	border-radius: 10px;
+	padding:2rem;
+	box-sizing: border-box;
+	box-shadow: 0 2px 5px rgba(0,0,0,.2);
+	background: white;
+	
+	.answers {
+		display:flex;
+		justify-content: space-between;
+	}
+
+}
 
 @keyframes spin { 
 	from { 
@@ -603,3 +621,4 @@ $snow-whiter: #EBECF5;
 			opacity: 1;
 		}
 	}
+

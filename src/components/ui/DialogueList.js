@@ -8,7 +8,6 @@ import NewDialoguePrompt from './NewDialoguePrompt';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import EyeIcon from 'material-ui/svg-icons/image/remove-red-eye';
 import IconButton from 'material-ui/IconButton';
-import Snackbar from 'material-ui/Snackbar';
 
 
 class DialogueList extends Component {
@@ -35,9 +34,10 @@ class DialogueList extends Component {
 		
 		let i = 0;
 		let list = [];
-		let dialogues = Object.keys(this.props.allDialogues).map((key, i) => {
-			let dialogue = this.props.allDialogues[key];
-
+		let dialogues = Object.keys(this.props.dialogues).map((key, i) => {
+			
+			let dialogue = this.props.dialogues[key];
+			
 			return (
 				<li className="ListItem" key={i} >
 					<Link activeClassName="active" to={"/dialogues/"+dialogue.id+"/"+this.getDialogueFirstCard(dialogue)}>
@@ -48,7 +48,7 @@ class DialogueList extends Component {
 				)
 		});
 
-		console.log(dialogues)
+
 		return (
 			<div style={{margin:"0 5%"}} >
 				<ul className="List">

@@ -149,6 +149,19 @@ export const cards = (state=null,action) => {
 
 }
 
+export const responses = (state=null,action) => {
+	switch(action.type) {
+
+		case C.GET_RESPONSES:
+		let next = Object.assign({}, state);
+		next[action.dialogueId] = action.value;
+		return next;
+
+	}
+
+	return state;
+}
+
 export default combineReducers({
-	isUpdating, hasUpdated, hasLoaded, devices, dialogues, cards
+	isUpdating, hasUpdated, hasLoaded, devices, dialogues, cards, responses
 })

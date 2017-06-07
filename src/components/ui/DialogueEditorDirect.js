@@ -43,6 +43,7 @@ class DialogueEditorDirect extends Component {
 		this.linkPaths = {};
 		this.linkPathFn = d3.line().x(function(d) { return d.x; }).y(function(d) { return d.y; }).curve(d3.curveBasis);
 
+
 	}
 
 
@@ -120,7 +121,7 @@ class DialogueEditorDirect extends Component {
 		let target = (t != -1) ? this.getRect(t) : endCard;
 		if(!target) return;
 
-		const ty =  target.top + target.height *.5  - topOffset;
+		let ty =  target.top + target.height *.5  - topOffset;
 		const isRight = answerId == 1;
 		const sx = isRight ? source.right : source.left;
 
@@ -130,7 +131,14 @@ class DialogueEditorDirect extends Component {
 
 		// calculating distance between cards to push link away from edge
 		let push = (target.top - source.top) * 0.02;
-		cornerX += push *(isRight ? 1 : -1) 
+		if(isAbove) {
+			ty-=10;
+			cornerX += push * (isRight ? -1 :1);
+		} else {
+			cornerX += push *(isRight ? 1 : -1) 
+		}
+
+
 
 		const arcWidth = 40;
 
@@ -410,6 +418,7 @@ class DialogueEditorDirect extends Component {
 				card={s.data.card}
 				style={s.style}
 				linkingAnswerIndex={this.state.linkingAnswerIndex}
+				isLinking={this.state.isLinking}
 				linkingCardId={this.state.linkingCardId}
 				selectedCardId={this.state.selectedCardId}
 				onLinking={this.onLinking}

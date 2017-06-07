@@ -24,19 +24,18 @@ All the icons used in the app are from the Material UI library. A reference shee
 
 **Danilo**
 
-Work on the dialogue animation representation
+Bugs:
+Always updating on add card
+
 Record card and link creation
 
-
-Dialogue screen
-- Add viz in dialogue view
-- Connect DB to visualizations
-
-Online indicator
 General
 - iPad testing
 
-- Realtime viz
+Visualization
+- Add viz in dialogue view
+- Connect DB to visualizations
+- Realtime viz?
 
 
 

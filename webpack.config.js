@@ -1,35 +1,43 @@
-var webpack = require("webpack");
-var isProduction = (process.env.NODE_ENV === 'production');
+const path = require('path');
+const webpack = require("webpack");
+const isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
-	debug: false,
+
 	devtool: 'inline-source-map',
-	entry: "./src/index.js",
-	plugins: [],
+	entry: [
+	'react-hot-loader/patch',
+	// activate HMR for React
+
+	'webpack-dev-server/client?http://localhost:3000',
+	// bundle the client for webpack-dev-server
+	// and connect to the provided endpoint
+
+	'webpack/hot/only-dev-server',
+	// bundle the client for hot reloading
+	// only- means to only hot reload for successful updates
+
+	"./src/index.js"
+	],
+	plugins: [
+	new webpack.HotModuleReplacementPlugin() // Enable HMR
+	],
 	output: {
-		path: "dist/assets",
+		path: path.resolve(__dirname, 'dist/assets'),    
 		filename: "bundle.js",
 		publicPath: "assets"
 	},
 	devServer: {
-		inline: true,
-		contentBase: './dist',
+		hot:true,
+		contentBase: path.resolve(__dirname, 'dist'),    
 		port: 3000
 	},
 	module: {
-		loaders: [
+		rules: [
 		{
-			test: /\.js$/,
-			exclude: /(node_modules)/,
-			loader: ["babel-loader"],
-			query: {
-				presets: ["latest", "stage-0", "react"]
-			}
-		},
-		{
-			test: /\.json$/,
-			exclude: /(node_modules)/,
-			loader: "json-loader"
+			test: /.js$/,
+			exclude: /node_modules/,
+			loader: 'babel-loader',
 		},
 		{
 			test: /\.css$/,
@@ -37,7 +45,12 @@ module.exports = {
 		},
 		{
 			test: /\.scss$/,
-			loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
+			use: [
+			 {loader: 'style-loader'},
+			 {loader: 'css-loader'},
+			 {loader: 'autoprefixer-loader'},
+			 {loader: 'sass-loader'}
+			]
 		}
 		]
 	}

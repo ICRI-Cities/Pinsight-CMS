@@ -15,7 +15,6 @@ import NotificationBar from './NotificationBar';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import '../../stylesheets/ui.scss'
 import {red500,blue500,blueGrey700} from 'material-ui/styles/colors'
 
 

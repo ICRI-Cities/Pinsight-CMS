@@ -13,6 +13,10 @@ class DialoguePreview extends Component {
 	
 	render() {
 
+		let dialogues = this.props.dialogues.sort((a,b)=>{
+			return a.order - b.order;
+		});
+
 		const actions = [
 			<FlatButton
 				label="Close"
@@ -28,7 +32,7 @@ class DialoguePreview extends Component {
 					modal={false}
 					open={this.props.open}
 				>
-					<DialoguePlayer dialogues={this.props.dialogues} allCards={this.props.allCards} />
+					<DialoguePlayer dialogues={dialogues} allCards={this.props.allCards} />
 				</Dialog>
 			</div>
 		)

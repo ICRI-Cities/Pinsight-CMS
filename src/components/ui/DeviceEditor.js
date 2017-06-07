@@ -11,6 +11,7 @@ import DeleteIcon from "material-ui/svg-icons/navigation/close";
 import PinIcon from "material-ui/svg-icons/communication/location-on";
 import DragIcon from "material-ui/svg-icons/editor/drag-handle";
 import PreviewIcon from "material-ui/svg-icons/av/play-arrow";
+import DataIcon from "material-ui/svg-icons/av/equalizer";
 
 import DialoguePreview from "./DialoguePreview";
 import NewDialoguePrompt from "./NewDialoguePrompt";
@@ -139,7 +140,6 @@ class DeviceEditor extends Component {
 			/>
 		)
 
-		console.log(dialogues)
 
 		if (dialogues.length == 0) {
 			deviceDialoguesList = <p>There are no dialogues on this device</p>;
@@ -177,6 +177,13 @@ class DeviceEditor extends Component {
 								onTouchTap={() =>
 									this.onPreviewDialogue(dialogue)}
 							/>
+							<Link	
+								to={
+									"/dialogues/" +dialogue.id+"/viz"
+								}
+							>
+							<DataIcon/>
+							</Link>
 
 						</div>
 					</li>

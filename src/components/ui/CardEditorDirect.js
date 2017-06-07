@@ -87,6 +87,7 @@ export default class CardEditorDirect extends Component {
 	getClassName() {
 		let s = "CardEditor";
 		if(this.props.selectedCardId == this.props.card.id) s+= " selected";
+		if(this.props.isLinking  && this.props.linkingCardId != this.props.card.id) s+= " isHoverable";
 		return s;
 	}
 
