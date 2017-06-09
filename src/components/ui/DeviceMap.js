@@ -22,10 +22,9 @@ const GoogleMapComponent = withGoogleMap( props => {
 	return(
 
 		<GoogleMap
-			ref={props.onMapLoad}
-			defaultZoom={15}
+			ref={(el)=> {props.onMapLoad(el)}}
+			defaultZoom={14}
 			center={props.markers[0].position}
-			onClick={props.onMapClick}
 			defaultOptions={{ 
 				styles: paleMapStyle, 
 				disableDefaultUI: true,
@@ -118,9 +117,6 @@ export default class DeviceMap extends Component {
 		};
 	}   
 
-	handleMapClick(event) {
-		// Unused
-	}
 
 	handleMarkerClick(targetMarker) {
 		// console.log("Opened the "+targetMarker.name+" infowindow")
@@ -196,8 +192,7 @@ export default class DeviceMap extends Component {
 
 
 	onMapLoad(mapElement) {
-		console.log(mapElement)
-		mapElement.fitBounds(this.bounds);
+		if(mapElement) mapElement.fitBounds(this.bounds);
 	}
 
 
@@ -230,7 +225,7 @@ export default class DeviceMap extends Component {
 					isDragging = {this.state.isDraggingMarker}
 					bounds = {this.bounds}
 					onCurrentMarkerLoaded = {this.onCurrentMarkerLoaded.bind(this)}
-					onMapClick={this.handleMapClick}
+					onMapLoad={this.onMapLoad}
 					onMarkerClick = { this.handleMarkerClick.bind(this) }
 					onMarkerClose = { this.handleMarkerClose.bind(this) }
 					onMoveButtonClick = { this.handleMoveButtonClick.bind(this) }

@@ -206,28 +206,33 @@ class DeviceEditor extends Component {
 					{dialogue.title}
 					</Link>
 					<div className="ignoreHandle buttons">
+					<IconButton tooltip ="rename">
 					<EditIcon
 					onTouchTap={()=>this.onRenameDialogue(dialogue)}
 					/>
+					</IconButton>
+					<IconButton tooltip ="delete">
 					<DeleteIcon
-					onTouchTap={() =>
-						this.props.onDeleteDialogueFromDevice(dialogue.id)}
-						/>
-						<PreviewIcon
-						onTouchTap={() =>
-							this.onPreviewDialogue(dialogue)}
-							/>
-							<Link	
-							to={
-								"/dialogues/" +dialogue.id+"/viz"
-							}
-							>
-							<DataIcon/>
-							</Link>
-
-							</div>
-							</li>
-							);
+					onTouchTap={() =>this.props.onDeleteDialogueFromDevice(dialogue.id)}
+					/>
+					</IconButton>
+					<IconButton tooltip ="preview">
+					<PreviewIcon
+					onTouchTap={() =>this.onPreviewDialogue(dialogue)}
+					/>
+					</IconButton>
+					<IconButton tooltip ="responses">
+					<Link	
+					to={
+						"/dialogues/" +dialogue.id+"/viz"
+					}
+					>
+					<DataIcon/>
+					</Link>
+					</IconButton>
+					</div>
+					</li>
+					);
 			});
 
 			const SortableList = SortableContainer(({ items }) => {
