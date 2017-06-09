@@ -23,18 +23,13 @@ All the icons used in the app are from the Material UI library. A reference shee
 
 
 **Danilo**
-
-Bugs:
-Always updating on add card
-
-Record card and link creation
+back arrow from viz
+Add end of dialogue to dialoguepreview
 
 General
 - iPad testing
 
 Visualization
-- Add viz in dialogue view
-- Connect DB to visualizations
 - Realtime viz?
 
 
@@ -164,8 +159,6 @@ Pin icon from [http://www.flaticon.com/free-icon/placeholder_232587#term=locatio
 
 ### Tests
 
-TODO
-
 Device Map
 - Move a Pin
 
@@ -182,7 +175,7 @@ Dialogue Editor
 - Delete a card
 - Change card title
 - Change card answers
-- Add/remove links
+- Add/remove links to next/previous cards
 - Switch image/text
 - Upload image
 

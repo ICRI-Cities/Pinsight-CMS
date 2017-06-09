@@ -21,13 +21,10 @@ class DialogueViz extends Component {
 	componentWillMount() {
 
 		if(this.props.responses == null || this.props.responses[this.props.dialogue.id] == null) {
-			this.props.getData();
+			this.props.getResponsesData();
 		}
 	}
-	
-	// shouldComponentUpdate(nextProps, nextState) {
-	// 	return this.props.dialogue.id != nextProps.dialogue.id;
-	// }
+
 
 	findCardIndex(id) {
 		if(id == -1) return this.props.cards.length;
@@ -40,18 +37,21 @@ class DialogueViz extends Component {
 
 		if(!nextProps.responses || !nextProps.responses[this.props.dialogue.id] || !nextProps.cards) return;
 		
+
 		nextProps.cards.forEach((card)=> {
 
 			// set links index
 			card.answers[0].linkIndex = this.findCardIndex(card.answers[0].link);
 			card.answers[1].linkIndex = this.findCardIndex(card.answers[1].link);
-			card.answers[0].clicks = 0;
-			card.answers[1].clicks = 0;
+			if(card.answers[0].clicks == null) card.answers[0].clicks = 0;
+			if(card.answers[1].clicks == null) card.answers[1].clicks = 0;
 			
+			let dialogueResponses = nextProps.responses[this.props.dialogue.id];
+
 			// aggregate respones per card
-			for(var i in nextProps.responses) {
-				if(nextProps.responses[i].cardId == card.id) {
-					card.answers[nextProps.responses[this.props.dialogue.id][i].value].clicks++;
+			for(var i in dialogueResponses) {
+				if(dialogueResponses[i].cardId == card.id) {
+					card.answers[dialogueResponses[i].value].clicks++;
 				}
 			}
 		})

@@ -1,9 +1,5 @@
 @import "globals";
-$primaryColour: #354852; // blueGrey300
-$secondaryColour:  #B0BEC5; // blueGrey200
-$buttonColour: #2196F3; // blue500
-$snow-white: #d3d5e3;
-$snow-whiter: #EBECF5;
+
 
 
 // Start of DeviceMap
@@ -163,8 +159,10 @@ $snow-whiter: #EBECF5;
 				background: #fff;
 				width: 100%;
 				border-radius: 10px;
+				box-sizing: border-box;
 				box-shadow: 0 2px 5px rgba(0,0,0,.2);
-				
+				border: 2px solid rgba(0,0,0,0);
+				transition: border .2s ease;
 				&.isHoverable:hover {
 					border: 2px solid $buttonColour;
 				}
@@ -194,21 +192,7 @@ $snow-whiter: #EBECF5;
 					cursor:pointer;
 				}
 
-				.CardDeleteButton {
-					position: absolute !important;
-					top: calc(-1.6rem - 2px);
-					right: 2rem;
-					padding: 0 !important;
-					background-color: #000 !important;
-					border-top-left-radius: 2rem * 2;
-					border-top-right-radius: 2rem * 2;
-					width: 2rem !important;
-					height: 1.6rem !important;
-
-					svg {
-						width: 1.05rem !important;
-					}
-				}
+			
 
 				.FieldContainer {
 					padding: 2rem 2rem 1.5rem;
@@ -412,45 +396,37 @@ $snow-whiter: #EBECF5;
 	.DialoguePlayerButtons {
 		display: flex;
 		text-align: center;
-
-		& > div {
-			border: 1px solid #ccc;
-			box-shadow: none !important;
-			display: inline-block;
-			margin: 2% !important;
-			min-width: auto !important;
-			width: 45%;
-
-			div {
-				display: flex;
-				align-items: center;
-			}
-		}
+		justify-content: space-between;
+		
 
 		button {
-			background-color: transparent !important;
-			display: block;
-			line-height: 1.1 !important;
-			padding: 1rem !important;
+			border: 1px solid #ccc;
+			box-shadow: none;
+			display: inline-block;
+			margin: 2%;
+			min-width: auto;
+			width: 45%;
 
-			width: auto !important;
-			height: auto !important;
+			background-color: transparent;
+			display: block;
+			line-height: 1.1;
+			padding: 1rem;
+
+			width: auto;
+			height: auto;
 
 			span {
-				color: #000 !important;
+				color: #000;
 				line-height: 1.2;
-				font-size: 1rem !important;
-				font-weight: normal !important;
-				padding: 0 !important;
-				text-transform: none !important;
+				font-size: 1rem;
+				font-weight: normal;
+				padding: 0;
+				text-transform: none;
 			}
 		}
 	}
 }
 
-.PrimaryFlatButton {
-	color: $buttonColour !important;
-}
 
 .CardNavigator {
 	width:100%;

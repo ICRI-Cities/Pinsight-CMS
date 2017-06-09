@@ -314,15 +314,15 @@ class DialogueEditorDirect extends Component {
 
 			<TransitionMotion
 			willEnter={(d)=>{
-				return {scale: 1.3, y: d.data.y}
+				return {blur:20, scale: 1.3, y: d.data.y}
 			}}
 			willLeave={(d)=>{
-				return {scale: spring(.2), y: d.data.y}
+				return {blur: spring(20), scale: spring(.2), y: d.data.y}
 			}}
 			styles={cards.map((card,i) => ({
 				key: card.endCard ? "end" : "key"+card.id,
 				data: {card, index: i, y:card.y},
-				style: {scale: spring(1), y:spring(card.y)},
+				style: {blur: spring(0), scale: spring(1), y:spring(card.y)},
 			}))}>
 
 
@@ -408,7 +408,7 @@ class DialogueEditorDirect extends Component {
 					transform: "translate3d(0px, "+s.style.y+"px, 0px)"
 				}}
 				>
-				Next dialogue
+				END OF DIALOGUE
 				</div>)
 		} else {
 			return (

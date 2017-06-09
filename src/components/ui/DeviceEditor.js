@@ -18,7 +18,7 @@ import NewDialoguePrompt from "./NewDialoguePrompt";
 import Dialog from "material-ui/Dialog";
 
 import RaisedButton from "material-ui/RaisedButton";
-import { blue500 } from "material-ui/styles/colors";
+import { lightBlue500 } from "material-ui/styles/colors";
 
 import {
 	SortableContainer,
@@ -27,16 +27,56 @@ import {
 	arrayMove
 } from "react-sortable-hoc";
 
+
+const OFFLINE_TRESHOLD = 100000;
 class DeviceEditor extends Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
 			existingDialoguePrompt: false,
 			renamingDialogue: null,
 			renamePrompt: false,
+			online: false,
 			previewPrompt: false
 		};
+		
+		this.setOnlineStatus = this.setOnlineStatus.bind(this);
+		this.onlineStatusChanged = this.onlineStatusChanged.bind(this);
+		this.checkOnlineInterval =0;
+	}
+
+	componentDidMount() {
+		// establish a realtime connection to detect changes of online status in devices
+		this.stopListening();
+		this.checkOnlineInterval = setInterval(this.setOnlineStatus, 3000);
+		console.log('/devices/'+this.props.device.id+"/lastScreenChanged")
+		window.database.ref('/devices/'+this.props.device.id+"/lastScreenChanged").on('value', this.onlineStatusChanged)	
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.checkOnlineInterval);
+		this.stopListening();
+	}
+
+	stopListening() {
+		window.database.ref('/devices/'+this.props.device.id).off('child_changed', this.onlineStatusChanged)	
+	}
+
+	setOnlineStatus() {
+		let isOnline  = this.lastChanged ? (new Date() -  this.lastChanged < OFFLINE_TRESHOLD ) : false;
+		console.log("last screen changed on device",this.lastChanged)
+		if(isOnline != this.state.online) {
+			this.setState({
+				online: isOnline
+			})
+		}
+
+	}
+	onlineStatusChanged(s) {
+		this.lastChanged = new Date(s.val());
+		console.log(s.val())
+		this.setOnlineStatus();
+		console.log(this.lastChanged)
 	}
 
 	onSortEnd({ oldIndex, newIndex }) {
@@ -87,7 +127,7 @@ class DeviceEditor extends Component {
 			update(this.props.device.dialogues, {
 				[dialogueId]: { $set: { id: dialogueId, order: newOrder } }
 			})
-		);
+			);
 
 		this.setState({
 			existingDialoguePrompt: false
@@ -132,13 +172,13 @@ class DeviceEditor extends Component {
 
 		let getCancelButton = (key) => (
 			<FlatButton
-				label="Cancel"
-				secondary={true}
-				onTouchTap={()=> {
-					this.setState({ [key]: false })
-				}}
+			label="Cancel"
+			secondary={true}
+			onTouchTap={()=> {
+				this.setState({ [key]: false })
+			}}
 			/>
-		)
+			)
 
 
 		if (dialogues.length == 0) {
@@ -147,73 +187,73 @@ class DeviceEditor extends Component {
 
 			const DragHandle = SortableHandle(() => (
 				<div className="handle"><DragIcon /></div>
-			));
+				));
 
 			const SortableItem = SortableElement(({ dialogue }) => {
 				return (
 					<li className="ListItem">
-						<DragHandle />
-						<Link
-							style={{ marginLeft: 10 }}
-							activeClassName="active"
-							to={
-								"/dialogues/" +
-									props.device.id +
-									"/" +
-									dialogue.id
-							}
-						>
-							{dialogue.title}
-						</Link>
-						<div className="ignoreHandle buttons">
-							<EditIcon
-								onTouchTap={()=>this.onRenameDialogue(dialogue)}
-							/>
-							<DeleteIcon
-								onTouchTap={() =>
-									this.props.onDeleteDialogueFromDevice(dialogue.id)}
-							/>
-							<PreviewIcon
-								onTouchTap={() =>
-									this.onPreviewDialogue(dialogue)}
+					<DragHandle />
+					<Link
+					style={{ marginLeft: 10 }}
+					activeClassName="active"
+					to={
+						"/dialogues/" +
+						props.device.id +
+						"/" +
+						dialogue.id
+					}
+					>
+					{dialogue.title}
+					</Link>
+					<div className="ignoreHandle buttons">
+					<EditIcon
+					onTouchTap={()=>this.onRenameDialogue(dialogue)}
+					/>
+					<DeleteIcon
+					onTouchTap={() =>
+						this.props.onDeleteDialogueFromDevice(dialogue.id)}
+						/>
+						<PreviewIcon
+						onTouchTap={() =>
+							this.onPreviewDialogue(dialogue)}
 							/>
 							<Link	
-								to={
-									"/dialogues/" +dialogue.id+"/viz"
-								}
+							to={
+								"/dialogues/" +dialogue.id+"/viz"
+							}
 							>
 							<DataIcon/>
 							</Link>
 
-						</div>
-					</li>
-				);
+							</div>
+							</li>
+							);
 			});
 
 			const SortableList = SortableContainer(({ items }) => {
 				return (
 					<ul className="List">
-						{items.map((dialogue, index) => (
-							<SortableItem
-								key={`item-${index}`}
-								index={index}
-								dialogue={dialogue}
-							/>
+					{items.map((dialogue, index) => (
+						<SortableItem
+						key={`item-${index}`}
+						index={index}
+						dialogue={dialogue}
+						/>
 						))}
 					</ul>
-				);
+					);
 			});
 
 			deviceDialoguesList = (
 				<div className="PinContentList">
-					<SortableList
-						items={dialogues}
-						onSortEnd={this.onSortEnd.bind(this)}
-						lockAxis="y"
-						useDragHandle={true}
-					/>
+				<SortableList
+				items={dialogues}
+				onSortEnd={this.onSortEnd.bind(this)}
+				lockAxis="y"
+				useDragHandle={true}
+				/>
 				</div>
-			);
+				);
 		}
 
 		if (!props.allDialogues) {
@@ -227,94 +267,97 @@ class DeviceEditor extends Component {
 			dialoguePrompt = (
 				<div className="AddExistingDialogue">
 				
-					<FlatButton
-						label="Add existing dialogue"
-						secondary={true}
-						onTouchTap={() =>
-							setTimeout(
-								() =>
-									this.setState({
-										existingDialoguePrompt: true
-									}),
-								200
-							)}
+				<FlatButton
+				label="Add existing dialogue"
+				secondary={true}
+				onTouchTap={() =>
+					setTimeout(
+						() =>
+						this.setState({
+							existingDialoguePrompt: true
+						}),
+						200
+						)}
 					/>
 
 					<Dialog
-						title="Select a dialogue"
-						modal={true}
-						open={this.state.existingDialoguePrompt}
-						actions={[getCancelButton("existingDialoguePrompt")]}
-						autoScrollBodyContent={true}
+					title="Select a dialogue"
+					modal={true}
+					open={this.state.existingDialoguePrompt}
+					actions={[getCancelButton("existingDialoguePrompt")]}
+					autoScrollBodyContent={true}
 					>
 
-						<div className="AllDialoguesList">
-							<List>
-								{allDialogues.map((dialogue, i) => (
-									<ListItem
-										primaryText={dialogue.title}
-										key={i}
-										onClick={() => this.onChosenDialogue(dialogue.id)}
-									/>
-								))}
-							</List>
-						</div>
+					<div className="AllDialoguesList">
+					<List>
+					{allDialogues.map((dialogue, i) => (
+						<ListItem
+						primaryText={dialogue.title}
+						key={i}
+						onClick={() => this.onChosenDialogue(dialogue.id)}
+						/>
+						))}
+					</List>
+					</div>
 					</Dialog>
-				</div>
-			);
+					</div>
+					);
 		}
 
 		return (
 			<div id="DialogueAdmin">
 
-				<div id="DialogueAdminHeader">
-					<div className="DialogueAdminDescript">
-						<h2>Content on this pin</h2>
-						<p>Drag items to change their order</p>
-					</div>
-					<RaisedButton
-						id="PushToDeviceButton"
-						backgroundColor={blue500}
-						onClick={this.props.onRefreshDevice}
-						label="Update this pin"
-					/>
-				</div>
+			<div id="DialogueAdminHeader">
+			<div className="DialogueAdminDescript">
+			<h2>Content on this pin</h2>
+			<p>Drag items to change their order</p>
+			</div>
+			<div>
+			<RaisedButton
+			id="PushToDeviceButton"
+			primary={true}
+			disabled = {!this.state.online}
+			onClick={this.props.onRefreshDevice}
+			label={this.state.online ? "Update this pin" : "pin is offline"}
+			/>
+			</div>
+			</div>
 			
-				{deviceDialoguesList}
+			{deviceDialoguesList}
 
-				<div className="BottomButtonContainer">
-					{dialoguePrompt}
-					<DialoguePreview
-						open={this.state.previewPrompt}
-						allCards={this.props.allCards}
-						dialogues={[this.state.previewedDialogue]}
-						onClosePreview={this.onClosePreview.bind(this)}
-					/>
-					<NewDialoguePrompt
-						{...this.props}
-						onSubmit={this.props.onAddNewDialogue}
-					/>
-				</div>
+			<div className="BottomButtonContainer">
+			{dialoguePrompt}
+			<DialoguePreview
+			open={this.state.previewPrompt}
+			allCards={this.props.allCards}
+			dialogues={[this.state.previewedDialogue]}
+			onClosePreview={this.onClosePreview.bind(this)}
+			/>
+			<NewDialoguePrompt
+			{...this.props}
+			onSubmit={this.props.onAddNewDialogue}
+			/>
+			</div>
 
-				<Dialog
-						title="Rename dialogue"
-						modal={true}
-						open={this.state.renamePrompt}
-						actions={[
-							getCancelButton("renamePrompt"),
-							<FlatButton
-									label="Submit"
-									primary={true}
-									onTouchTap={this.onRenamedDialogue.bind(this)}
-							/>
-							]}
+			<Dialog
+			title="Rename dialogue"
+			modal={true}
+			open={this.state.renamePrompt}
+			actions={[
+				getCancelButton("renamePrompt"),
+				<FlatButton
+				label="Submit"
+				primary={true}
+				onTouchTap={this.onRenamedDialogue.bind(this)}
+				/>
+				]}
 				>
 
-					<TextField hintText="Hint Text" defaultValue={this.state.renamingDialogue ? this.state.renamingDialogue.title : ""} ref="renameTextField" />
+				<TextField hintText="Hint Text" defaultValue={this.state.renamingDialogue ? this.state.renamingDialogue.title : ""} ref="renameTextField" />
 
 				</Dialog>
-			</div>
-		);
+				</div>
+				);
 	}
 }
 export default DeviceEditor;

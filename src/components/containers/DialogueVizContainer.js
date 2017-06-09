@@ -23,7 +23,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = (dispatch, props) => {
 
 	return {
-		getData() {
+		getResponsesData() {
 			dispatch(getResponses(props.params.dialogue));
 		}
 	};

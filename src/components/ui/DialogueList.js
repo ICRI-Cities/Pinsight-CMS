@@ -17,11 +17,6 @@ class DialogueList extends Component {
 		super(props);
 	}
 
-	
-	onDelete(e,dialogue) {
-		e.preventDefault();
-		this.props.onDeleteDialogue(dialogue)
-	}
 
 	getDialogueFirstCard(dialogue) {
 
@@ -43,7 +38,7 @@ class DialogueList extends Component {
 					<Link activeClassName="active" to={"/dialogues/"+dialogue.id+"/"+this.getDialogueFirstCard(dialogue)}>
 						{dialogue.title}
 					</Link>
-					<IconButton onTouchTap={(e)=>this.onDelete(e,dialogue)}><DeleteIcon/> </IconButton>
+					<IconButton onTouchTap={(e)=>this.props.onDeleteDialogue(dialogue)}><DeleteIcon/> </IconButton>
 				</li>
 				)
 		});

@@ -15,7 +15,7 @@ import NotificationBar from './NotificationBar';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {red500,blue500,blueGrey700} from 'material-ui/styles/colors'
+import {red500,lightBlue500,blueGrey700} from 'material-ui/styles/colors'
 
 
 
@@ -109,10 +109,10 @@ export default class App extends Component {
 
 		const muiTheme = getMuiTheme({
 			palette: {
-				primary1Color: blueGrey700,
-				primary2Color: blueGrey700,
-				accent1Color: blue500,
-				secondaryTextColor: blue500,
+				primary1Color: lightBlue500,
+				// primary2Color: blueGrey700,
+				accent1Color: lightBlue500,
+				// secondaryTextColor: lightBlue500,
 				textColor: blueGrey700,
 				pickerHeaderColor: blueGrey700
 			},
@@ -120,7 +120,6 @@ export default class App extends Component {
 				height: 50,
 			}
 		});
-
 
 		return (
 

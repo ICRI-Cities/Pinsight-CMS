@@ -254,7 +254,7 @@ export default class DeviceMap extends Component {
 							  			id="ConfirmMoveButton"
 							  			label="Confirm"
 							  			labelPosition="before"
-							  			secondary="true"
+							  			secondary={true}
 							  			onClick={ this.handleMarkerConfirmMove.bind(this) }>
 									<ConfirmIcon color="#2196F3" />
 								</FlatButton>

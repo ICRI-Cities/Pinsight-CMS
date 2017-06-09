@@ -4,7 +4,7 @@ import FlatButton from "material-ui/FlatButton";
 import PlusIcon from "material-ui/svg-icons/content/add-circle";
 import IconButton from "material-ui/IconButton";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
-import { blue500, blueGrey200 } from "material-ui/styles/colors";
+import { lightBlue500, blueGrey200 } from "material-ui/styles/colors";
 
 import ButtonCombo from "./ButtonCombo";
 import CardContentBox from "./CardContentBox";
@@ -97,12 +97,11 @@ export default class CardEditorDirect extends Component {
 		const ai = props.answerIndex;
 		let deleteButton = (
 			<IconButton
-
-			style={{position: "absolute", right: 0, width:30, height:30, padding:0}}
+			style={{position: "absolute", right: 2, width:30, height:30, padding:0}}
 			className="CardDeleteButton"
 			onTouchTap={this.onDeleteCard}
 			>
-			<DeleteIcon color="black" />
+			<DeleteIcon color="#ddd" />
 			</IconButton>
 			);
 
@@ -112,6 +111,7 @@ export default class CardEditorDirect extends Component {
 			<div style= {{
 				position: "absolute",
 				width: "100%",
+				filter: "blur("+props.style.blur+"px)",
 				transform: "translate3d(0px, "+ props.style.y +"px, 0px) scale("+props.style.scale+")"
 			}}
 			onTouchTap = {this.onSelectCard}

@@ -1,5 +1,6 @@
 import { connect } from "react-redux";
 import DialogueList from "../ui/DialogueList";
+import {deleteDialogue} from "../../actions"
 
 const mapStateToProps = (state, props) => {
 
@@ -15,7 +16,12 @@ const mapDispatchToProps = (dispatch, props) => {
 
 	return {
 		
-
+		onDeleteDialogue(dialogue ) {
+			var confirmDialogue = confirm("If you delete this dialogue, you will not be able to get it back. Delete this dialogue?");
+			if (confirmDialogue == true) {
+				dispatch(deleteDialogue(dialogue));
+			}
+		}
 	};
 };
 

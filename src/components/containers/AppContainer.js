@@ -11,7 +11,7 @@ const mapStateToProps = (state, props) => {
 
 	if(!state.hasLoaded) return {hasLoaded: state.hasLoaded};
 
-	if(props.params.device) {
+	if(props.params.device && props.params.dialogue == null) {
 		const device = state.devices[parseInt(props.params.device)];
 		title = state.devices[props.params.device].name;
 		icon = true;

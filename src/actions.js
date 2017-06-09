@@ -28,10 +28,14 @@ export const getData = () => {
 				});
 				dispatch(isUpdating(false));
 				dispatch(hasLoaded(true));
-			});	
-		}
+		});
 
-	}
+
+
+
+}
+
+}
 }
 
 export const getResponses = (dialogueId) => {
@@ -306,6 +310,7 @@ export const renameDialogue = (dialogue, title) => {
 export const deleteDialogue = (dialogue) => {
 	return (dispatch) => {
 
+		console.log(dialogue)
 		dispatch(isUpdating(true));
 		let updates = {};
 

@@ -1,7 +1,8 @@
 $snow-white: #d3d5e3;
+$snow-whiter: #EBECF5;
 $primaryColour: #90A4AE; // blueGrey300
 $secondaryColour:  #B0BEC5; // blueGrey200
-$buttonColour: #2196F3; // blue500
+$buttonColour: #03A9F4; // lightBlue500
 
 body, html {
 	margin: 0;
@@ -53,13 +54,12 @@ label {
 				// margin: 0px 2rem 0 0 !important;
 				text-align: center !important;
 
-				&:after {
+				&:before {
 					background: transparent url('/assets/images/pin-ffffff.png') no-repeat;
 					background-size: contain;
 					content: " ";
 					display: inline-block;
-					margin-left: 0.25rem;
-					vertical-align: -0.1rem;
+					margin-right: 0.25rem;
 					width: 1rem;
 					height: 1rem;
 				}

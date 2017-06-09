@@ -1,6 +1,6 @@
 import {Component} from "react";
 import LinkIcon from "material-ui/svg-icons/content/link";
-import { blue500 } from "material-ui/styles/colors";
+import { lightBlue500 } from "material-ui/styles/colors";
 
 
 class LinkHandle extends Component {
@@ -16,7 +16,7 @@ class LinkHandle extends Component {
 		let style = {
 			left: props.mystyle.left ? props.mystyle.left : "auto",
 			right: props.mystyle.right ? props.mystyle.right : "auto",
-			background: blue500
+			background: lightBlue500
 		}
 	
 		return ( <div className="LinkHandle" style={style}  onTouchTap={props.onTouchTap} > <LinkIcon color="#fff"/> </div>	);
