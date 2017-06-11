@@ -102,7 +102,11 @@ export const dialogues = (state=null,action) => {
 		}
 		return next;
 
-		return newState;
+		case C.DELETE_DIALOGUE:
+		next = Object.assign({}, state);
+		delete next[action.dialogue.id];
+		return next;
+
 		
 	}
 	return state;
@@ -141,6 +145,13 @@ export const cards = (state=null,action) => {
 			if(next[i].answers[1].link == action.cardId) next[i].answers[1].link = -1;
 		}
 
+		return next;
+
+		case C.DELETE_DIALOGUE:
+		next = Object.assign({}, state);
+		for (var i = 0; i < action.dialogue.cards.length; i++) {
+			delete next[action.dialogue.cards[i]];
+		}
 		return next;
 
 		default:

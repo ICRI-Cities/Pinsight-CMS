@@ -20,7 +20,7 @@ const routes = (
 		<IndexRoute component={Home} />
 
 		<Route path="dialogues" component = {DialogueListContainer} />
-		<Route path="dialogues/:dialogue/viz" component = {DialogueVizContainer} />
+		<Route path="dialogues/:device/:dialogue/viz" component = {DialogueVizContainer} />
 		<Route path="dialogues/:device/:dialogue" component = {DialogueEditorContainer} />
 		<Route path="devices/:device" component = {DeviceEditorContainer} />
 

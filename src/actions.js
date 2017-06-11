@@ -28,14 +28,14 @@ export const getData = () => {
 				});
 				dispatch(isUpdating(false));
 				dispatch(hasLoaded(true));
-		});
+			});
 
 
 
 
-}
+		}
 
-}
+	}
 }
 
 export const getResponses = (dialogueId) => {
@@ -44,26 +44,19 @@ export const getResponses = (dialogueId) => {
 
 		dispatch(isUpdating(true));
 		
-		if(window.DEBUG && localStorage["redux-store-responses"]) {
+
+		window.database
+		.ref('responses')
+		.orderByChild("dialogueId").equalTo(dialogueId).once("value").then((snapshot) => {
 			dispatch({
 				type: C.GET_RESPONSES,
-				value: JSON.parse(localStorage["redux-store-responses"])
+				dialogueId,
+				value: snapshot.val() || {}
 			});
+			console.log(snapshot.val())
 			dispatch(isUpdating(false));
-
-		} else {
-			window.database
-			.ref('responses')
-			.orderByChild("dialogueId").equalTo(dialogueId).once("value").then((snapshot) => {
-				// localStorage["redux-store-responses"] = JSON.stringify(snapshot.val());
-				dispatch({
-					type: C.GET_RESPONSES,
-					dialogueId,
-					value: snapshot.val() || {}
-				});
-				dispatch(isUpdating(false));
-			});
-		}
+		});
+		
 	}
 
 }
@@ -314,6 +307,11 @@ export const deleteDialogue = (dialogue) => {
 		dispatch(isUpdating(true));
 		let updates = {};
 
+		dispatch({
+			type: C.DELETE_DIALOGUE,
+			dialogue
+		});	
+
 		// delete reference of this dialogue in devices
 		window.database
 		.ref('devices')
@@ -331,26 +329,7 @@ export const deleteDialogue = (dialogue) => {
 			// finally delete dialogue
 			updates['/dialogues/'+dialogue.id] = null;
 
-			window.database.ref().update(updates).then(()=> {
-				dispatch(hasLoaded(false));
-				
-				// re update the whole app
-				// TODO this should only refresh dialogues
-
-				window.database
-				.ref('/')
-				.once('value')
-				.then((snapshot) => {
-					dispatch({
-						type: C.GET_DATA,
-						value: snapshot.val()
-					})
-					// dispatch(hasUpdated());	
-					dispatch(isUpdating(false));
-					dispatch(hasLoaded(true));
-				});
-
-			});
+			window.database.ref().update(updates);
 
 
 		});	

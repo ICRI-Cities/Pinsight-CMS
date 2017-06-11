@@ -20,7 +20,7 @@ class DialoguePreview extends Component {
 		const actions = [
 			<FlatButton
 				label="Close"
-				primary={false}
+				primary={true}
 				onTouchTap={this.props.onClosePreview.bind(this)}
 			/>
 		];

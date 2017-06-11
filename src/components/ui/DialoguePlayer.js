@@ -66,11 +66,11 @@ class DialoguePlayer extends Component {
 
 				{ this.props.dialogues.length > 1 && 
 					<div className="DialoguePlayerButtons">
-					<RaisedButton
-					buttonStyle = {buttonStyle}
+					<FlatButton
 					style = {buttonDivStyle}
+					buttonStyle = {buttonStyle}
 					label = {this.props.dialogues.length > 1 ? "End" : "next dialogue" }
-					primary={true}
+					primary={false}
 					onTouchTap={()=>this.goToNextDialogue()}
 					/>
 					</div>
@@ -85,7 +85,7 @@ class DialoguePlayer extends Component {
 			let answers = currentCard.answers.map((answer,i)=> {
 
 				return (
-					<RaisedButton
+					<FlatButton
 					label = {answer.label || " " }
 					key = {i}
 					style = {buttonDivStyle}

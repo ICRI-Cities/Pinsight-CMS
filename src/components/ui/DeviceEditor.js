@@ -224,7 +224,11 @@ class DeviceEditor extends Component {
 					<IconButton tooltip ="responses">
 					<Link	
 					to={
-						"/dialogues/" +dialogue.id+"/viz"
+						"/dialogues/" +
+						props.device.id +
+						"/" +
+						dialogue.id
+						+"/viz"
 					}
 					>
 					<DataIcon/>

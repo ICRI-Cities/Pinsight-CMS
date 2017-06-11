@@ -7,7 +7,8 @@ const mapStateToProps = (state, props) => {
 	if (!state.hasLoaded) return;
 
 	return {
-		dialogues: state.dialogues
+		dialogues: state.dialogues,
+		cards: state.cards
 	};
 };
 

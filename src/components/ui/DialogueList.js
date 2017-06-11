@@ -6,6 +6,7 @@ import AppBar from 'material-ui/AppBar'
 import NewDialogue from './NewDialogue'
 import NewDialoguePrompt from './NewDialoguePrompt';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import DownloadIcon from 'material-ui/svg-icons/action/get-app';
 import EyeIcon from 'material-ui/svg-icons/image/remove-red-eye';
 import IconButton from 'material-ui/IconButton';
 
@@ -18,12 +19,18 @@ class DialogueList extends Component {
 	}
 
 
-	getDialogueFirstCard(dialogue) {
 
-		const dialogueCards = Object.keys(dialogue.cards).map( (cardId) => { return cardId })
-		return dialogueCards[0];
+	onDownloadData(dialogue) {
+		var o = {};
+		o.dialogue = dialogue;
+		o.cards = {};
+		for(var i in dialogue.cards) {
+			o.cards[i] = this.props.cards[i]
+		}
+		
+		var uriContent = "data:application/octet-stream," + encodeURIComponent(JSON.stringify(o));
+		window.open(uriContent, 'export');
 	}
-
 
 	render() {
 		
@@ -35,9 +42,10 @@ class DialogueList extends Component {
 			
 			return (
 				<li className="ListItem" key={i} >
-					<Link activeClassName="active" to={"/dialogues/"+dialogue.id+"/"+this.getDialogueFirstCard(dialogue)}>
+					<Link activeClassName="active" to={"/dialogues/"+dialogue.id}>
 						{dialogue.title}
 					</Link>
+					<IconButton onTouchTap={(e)=>this.onDownloadData(dialogue)}><DownloadIcon/> </IconButton>
 					<IconButton onTouchTap={(e)=>this.props.onDeleteDialogue(dialogue)}><DeleteIcon/> </IconButton>
 				</li>
 				)

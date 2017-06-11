@@ -6,7 +6,7 @@ import BackIcon from "material-ui/svg-icons/navigation/arrow-back";
 import PlusIcon from "material-ui/svg-icons/content/add-circle";
 import PlayIcon from "material-ui/svg-icons/av/play-arrow";
 import FlatButton from "material-ui/FlatButton";
-import {blue500, blueGrey200, blueGrey800} from 'material-ui/styles/colors'
+import {lightBlue500, blueGrey200, blueGrey800} from 'material-ui/styles/colors'
 
 import CardEditorDirect from "./CardEditorDirect";
 import DialoguePreview from "./DialoguePreview";
@@ -61,8 +61,6 @@ class DialogueEditorDirect extends Component {
 		window.requestAnimationFrame(this.drawArrows)
 	}
 
-	componentWillUpdate(nextProps, nextState) {
-	}
 
 	componentDidUpdate(prevProps, prevState) {
 		d3.select(this.svg).attr("height", this.getY(this.props.cards.length + 1));
@@ -101,7 +99,7 @@ class DialogueEditorDirect extends Component {
 			const isLinking = isSelected &&  index == linkingAnswerIndex;
 			const el = d3.select(this);
 			el.attr("class","arrowpath links"+index + (isLinking ? " blinking" : ""))	
-			el.style("stroke",  isLinking  ? blue500 : blueGrey200);
+			el.style("stroke",  isLinking  ? lightBlue500 : blueGrey200);
 			el.attr("marker-end", isLinking  ? "url(#bluearrow)" :"url(#lightarrow)");
 		})
 		.datum((card)=>this.getMyPoints(card, index) || [])
@@ -127,14 +125,16 @@ class DialogueEditorDirect extends Component {
 
 		const isAbove = target.top < source.top;
 
-		let cornerX = isRight ? 60 : -60;
+		let cornerX = isRight ? 50 : -50;
 
 		// calculating distance between cards to push link away from edge
-		let push = (target.top - source.top) * 0.02;
+		let push = (target.top - source.top) * 0.1;
 		if(isAbove) {
 			ty-=10;
+			push += target.top * 0.01;
 			cornerX += push * (isRight ? -1 :1);
 		} else {
+			push += source.top * 0.01;
 			cornerX += push *(isRight ? 1 : -1) 
 		}
 
@@ -279,7 +279,7 @@ class DialogueEditorDirect extends Component {
 	}
 
 	render() {
-
+		console.log("render")
 		let svgStyle = {
 			position: "absolute",
 			pointerEvents: "none",
@@ -370,7 +370,7 @@ class DialogueEditorDirect extends Component {
 			viewBox="0 -5 10 10"
 			orient="auto"
 			>
-			<path d="M0,-5L10,0L0,5" fill={blue500} />
+			<path d="M0,-5L10,0L0,5" fill={lightBlue500} />
 			</marker>
 
 			</defs>
