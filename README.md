@@ -24,7 +24,7 @@ All the icons used in the app are from the Material UI library. A reference shee
 
 **Danilo**
 back arrow from viz
-Add end of dialogue to dialoguepreview
+filter buttons in viz
 
 General
 - iPad testing

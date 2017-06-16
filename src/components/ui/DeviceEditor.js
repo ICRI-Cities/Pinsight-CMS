@@ -49,7 +49,6 @@ class DeviceEditor extends Component {
 		// establish a realtime connection to detect changes of online status in devices
 		this.stopListening();
 		this.checkOnlineInterval = setInterval(this.setOnlineStatus, 3000);
-		console.log('/devices/'+this.props.device.id+"/lastScreenChanged")
 		window.database.ref('/devices/'+this.props.device.id+"/lastScreenChanged").on('value', this.onlineStatusChanged)	
 	}
 
@@ -59,7 +58,7 @@ class DeviceEditor extends Component {
 	}
 
 	stopListening() {
-		window.database.ref('/devices/'+this.props.device.id).off('child_changed', this.onlineStatusChanged)	
+		window.database.ref('/devices/'+this.props.device.id+"/lastScreenChanged").off('value', this.onlineStatusChanged)	
 	}
 
 	setOnlineStatus() {
@@ -211,7 +210,7 @@ class DeviceEditor extends Component {
 					onTouchTap={()=>this.onRenameDialogue(dialogue)}
 					/>
 					</IconButton>
-					<IconButton tooltip ="delete">
+					<IconButton tooltip ="remove">
 					<DeleteIcon
 					onTouchTap={() =>this.props.onDeleteDialogueFromDevice(dialogue.id)}
 					/>

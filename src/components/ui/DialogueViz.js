@@ -36,26 +36,29 @@ class DialogueViz extends Component {
 	componentWillReceiveProps(nextProps) {
 
 		if(!nextProps.responses || !nextProps.responses[this.props.dialogue.id] || !nextProps.cards) return;
-		
+
+		let dialogueResponses = nextProps.responses[this.props.dialogue.id];
 
 		nextProps.cards.forEach((card)=> {
 
 			// set links index
 			card.answers[0].linkIndex = this.findCardIndex(card.answers[0].link);
 			card.answers[1].linkIndex = this.findCardIndex(card.answers[1].link);
-			if(card.answers[0].clicks == null) card.answers[0].clicks = 0;
-			if(card.answers[1].clicks == null) card.answers[1].clicks = 0;
+			card.answers[0].clicks = 0;
+			card.answers[1].clicks = 0;
 			
-			let dialogueResponses = nextProps.responses[this.props.dialogue.id];
 
 			// aggregate respones per card
 			for(var i in dialogueResponses) {
 				if(dialogueResponses[i].cardId == card.id) {
-					card.answers[dialogueResponses[i].value].clicks++;
+					card.answers[+dialogueResponses[i].value].clicks++;
 				}
 			}
+
 		})
+
 	}
+
 
 	componentDidMount() {
 		window.addEventListener("resize", this.drawArrows)
@@ -98,7 +101,7 @@ class DialogueViz extends Component {
 		.merge(paths)
 		.attr("d", function(d,i){ return linkPathFn(self.getPoints(d, i,0))});
 
-	 	paths = svg
+		paths = svg
 		.selectAll(".link1")
 		.data(links)
 
@@ -131,7 +134,7 @@ class DialogueViz extends Component {
 
 		let sx = this.width /2 +  (isRight ? CARD_WIDTH/2 : -CARD_WIDTH/2);
 		let sy = this.getY(sourceIndex) + CARD_HEIGHT*.8;
-		let ty = this.getY(targetIndex) + CARD_HEIGHT*.2;
+		let ty = this.getY(targetIndex) + CARD_HEIGHT*.5;
 
 		// calculating distance between cards to push link away from edge
 		let push = (targetIndex - sourceIndex) * 40;
@@ -172,7 +175,7 @@ class DialogueViz extends Component {
 			y:ty
 		},
 		{
-			x:sx ,
+			x:sx,
 			y:ty
 		}
 		];

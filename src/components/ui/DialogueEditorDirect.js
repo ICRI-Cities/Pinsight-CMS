@@ -279,7 +279,9 @@ class DialogueEditorDirect extends Component {
 	}
 
 	render() {
-		console.log("render")
+		
+
+
 		let svgStyle = {
 			position: "absolute",
 			pointerEvents: "none",
@@ -287,6 +289,8 @@ class DialogueEditorDirect extends Component {
 		};
 
 		const props = this.props;
+
+
 
 		let cards =  props.cards.map((card,i)=>{
 			return({
