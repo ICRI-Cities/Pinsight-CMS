@@ -63,7 +63,6 @@ class DeviceEditor extends Component {
 
 	setOnlineStatus() {
 		let isOnline  = this.lastChanged ? (new Date() -  this.lastChanged < OFFLINE_TRESHOLD ) : false;
-		console.log("last screen changed on device",this.lastChanged)
 		if(isOnline != this.state.online) {
 			this.setState({
 				online: isOnline

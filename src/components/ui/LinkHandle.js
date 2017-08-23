@@ -14,8 +14,8 @@ class LinkHandle extends Component {
 		let props = this.props;
 
 		let style = {
-			left: props.mystyle.left ? props.mystyle.left : "auto",
-			right: props.mystyle.right ? props.mystyle.right : "auto",
+			transform: "translate("+ (props.isFirst ? "-100%" : "100%") + ", -50%)",
+			right: props.isFirst ? "auto" :0,
 			background: lightBlue500
 		}
 	

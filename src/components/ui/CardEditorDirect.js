@@ -4,7 +4,7 @@ import FlatButton from "material-ui/FlatButton";
 import PlusIcon from "material-ui/svg-icons/content/add-circle";
 import IconButton from "material-ui/IconButton";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
-import { lightBlue500, blueGrey200 } from "material-ui/styles/colors";
+import { lightBlue500, grey500, blueGrey200 } from "material-ui/styles/colors";
 
 import ButtonCombo from "./ButtonCombo";
 import CardContentBox from "./CardContentBox";
@@ -155,9 +155,9 @@ export default class CardEditorDirect extends Component {
 			<FlatButton
 			label="Add Card"
 			primary={true}
-			style={{position:"absolute", color: "#333",left:"50%", bottom:0, transform:"translate(-50%,120%)" }}
+			style={{position:"absolute", color: grey500, left:"50%", bottom:0, transform:"translate(-50%,120%)" }}
 			onTouchTap={()=> {props.onAddCard({order: props.index })} }
-			icon={<PlusIcon color="#333" />}
+			icon={<PlusIcon color= {grey500} />}
 			/>
 
 

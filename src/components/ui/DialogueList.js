@@ -6,6 +6,7 @@ import AppBar from 'material-ui/AppBar'
 import NewDialogue from './NewDialogue'
 import NewDialoguePrompt from './NewDialoguePrompt';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import GraphIcon from 'material-ui/svg-icons/editor/linear-scale';
 import DownloadIcon from 'material-ui/svg-icons/action/get-app';
 import EyeIcon from 'material-ui/svg-icons/image/remove-red-eye';
 import IconButton from 'material-ui/IconButton';
@@ -45,6 +46,7 @@ class DialogueList extends Component {
 					<Link activeClassName="active" to={"/dialogues/"+dialogue.id}>
 						{dialogue.title}
 					</Link>
+					<IconButton><Link  to={"/dialogues/"+dialogue.id+"/structure"}><GraphIcon/></Link></IconButton>
 					<IconButton onTouchTap={(e)=>this.onDownloadData(dialogue)}><DownloadIcon/> </IconButton>
 					<IconButton onTouchTap={(e)=>this.props.onDeleteDialogue(dialogue)}><DeleteIcon/> </IconButton>
 				</li>

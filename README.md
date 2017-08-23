@@ -23,8 +23,11 @@ All the icons used in the app are from the Material UI library. A reference shee
 
 
 **Danilo**
+remove link!    
 back arrow from viz
-filter buttons in viz
+Move viz buttons from device editor to dialogue editor 
+device and date filter buttons in viz
+ 
 
 General
 - iPad testing

@@ -57,7 +57,7 @@ export default class CardContentBox extends Component {
 						onFocus={ this.handleFocus}
 						onBlur={ this.handleBlur}
 						value={this.state.currentValue}
-						rows="3"
+						rows="4"
 					/>
 					<label 
 						style={{marginBottom: "2rem",color: this.props.card.title.length > 140	? "red"	: "#ddd"}}

@@ -20,9 +20,9 @@ injectTapEventPlugin()
 
 const store = storeFactory({isUpdating:true});
 
-// TODO this shouldn't be global :)
+
+window.DEBUG = true;
 window.store = store;
-window.DEBUG = false;
 window.React = React;
 
 
@@ -35,19 +35,13 @@ const initDatabase = () => {
 		databaseURL: "https://pinsight-cf45d.firebaseio.com/",
 		storageBucket: 'gs://pinsight-cf45d.appspot.com'
 	};
+
 	firebase.initializeApp(FIREBASECONFIG)
 
-	// TODO this shouldn't be global :)
 	window.database = firebase.database()
 	window.storage = firebase.storage()
 
 	store.dispatch(getData());
-
-	// TODO CAN
-	// list all the responses of dialogue 0
-	// https://firebase.google.com/docs/reference/js/firebase.database.Query#ref
-	
-
 
 }
 

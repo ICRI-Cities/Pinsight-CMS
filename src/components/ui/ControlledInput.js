@@ -32,7 +32,7 @@ export default class ControlledInput extends Component {
 
 	render() {
 
-		let inputStyle = {border: '1px solid #ddd', borderBottom: '2px solid #ddd', width: '100%', fontSize:".9rem" };
+		let inputStyle = {border: '1px solid #ddd', borderBottom: '2px solid #ddd', width: '100%', fontSize:".8rem" };
 		let textareaStyle = {padding:0, border: '1px solid #ddd', marginTop:0, borderBottom: '2px solid #ddd', width: '100%', fontSize:".9rem" };
 		let properties = {
 			onTouchTap: this.props.onTouchTap,

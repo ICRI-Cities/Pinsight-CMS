@@ -59,7 +59,7 @@ export default class ButtonCombo extends Component {
 					onChange={this.onLabelChange}
 					label={this.props.label}
 					/>
-					<LinkHandle mystyle={ {left: isFirst ? "0" : "100%"} } onTouchTap={this.onLinkClicked} className="LinkHandle"/>	
+					<LinkHandle isFirst={ isFirst } onTouchTap={this.onLinkClicked} className="LinkHandle"/>	
 				</div>
 				<label style={{ color: len < 0 ? "red" : "#ddd" }}>
 					{errorText}

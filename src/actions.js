@@ -2,12 +2,11 @@ import {hashHistory} from 'react-router'
 import C from './constants'
 import * as firebase from 'firebase'
 
-
-
 export const getData = () => {
 	return (dispatch) => {
 
 		if(window.DEBUG && localStorage["redux-store"]) {
+			
 			dispatch({
 				type: C.GET_DATA,
 				value: JSON.parse(localStorage["redux-store"])
@@ -38,6 +37,8 @@ export const getData = () => {
 	}
 }
 
+
+
 export const getResponses = (dialogueId) => {
 	
 	return (dispatch) => {
@@ -53,7 +54,6 @@ export const getResponses = (dialogueId) => {
 				dialogueId,
 				value: snapshot.val() || {}
 			});
-			console.log(snapshot.val())
 			dispatch(isUpdating(false));
 		});
 		
