@@ -3,8 +3,6 @@ import ResponseViz from "../ui/ResponseViz";
 import {getResponses} from "../../actions";
 
 
-
-
 const mapStateToProps = (state, props) => {
 
 	if (!state.hasLoaded) return;

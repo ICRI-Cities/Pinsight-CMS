@@ -77,7 +77,7 @@ class ResponseViz extends Component {
 			.data(data)
 			.enter().append("circle")
 			.attr("fill", (d,i )=> {
-				return (i ==0 ? "red" : (d.id==-1 ? "#ddd" : '#000'))
+				return (i ==0 ? "red" : (d.id !=-1 ? "#ddd" : '#00c7ff'))
 			})
 			.attr("r", 5)
 			.attr("cx", (d,i)=>{
@@ -85,7 +85,7 @@ class ResponseViz extends Component {
 				return d.x
 			})
 			.attr("cy", (d,i)=>{
-				d.y =  i *20 + 100
+				d.y =  i *50 + 100
 				return d.y
 			})
 			.call(drag()

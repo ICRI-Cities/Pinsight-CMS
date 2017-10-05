@@ -44,7 +44,7 @@ class DialogueList extends Component {
 			return (
 				<li className="ListItem" key={i} >
 					<Link activeClassName="active" to={"/dialogues/"+dialogue.id}>
-						{dialogue.title}
+						{dialogue.title + " ("+Object.keys(dialogue.cards).length+" cards)"}
 					</Link>
 					<IconButton><Link  to={"/dialogues/"+dialogue.id+"/structure"}><GraphIcon/></Link></IconButton>
 					<IconButton onTouchTap={(e)=>this.onDownloadData(dialogue)}><DownloadIcon/> </IconButton>

@@ -5,8 +5,6 @@ import {extent} from 'd3-array';
 import {scaleLinear} from 'd3-scale';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import InputRange from 'react-input-range';
-import 'react-input-range/lib/css/index.css';
 
 const RADIUS = 100;
 const CARD_WIDTH = 400;
