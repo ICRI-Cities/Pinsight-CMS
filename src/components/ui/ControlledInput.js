@@ -32,8 +32,7 @@ export default class ControlledInput extends Component {
 
 	render() {
 
-		let inputStyle = {border: '1px solid #ddd', borderBottom: '2px solid #ddd', width: '100%', fontSize:".8rem" };
-		let textareaStyle = {padding:0, border: '1px solid #ddd', marginTop:0, borderBottom: '2px solid #ddd', width: '100%', fontSize:".9rem" };
+		let style = {border: '1px solid #ddd', width: '100%', fontSize:".8rem" };
 		let properties = {
 			onTouchTap: this.props.onTouchTap,
 			onChange: this.handleChange.bind(this),
@@ -41,7 +40,7 @@ export default class ControlledInput extends Component {
 			onBlur: this.handleBlur.bind(this),
 			value: this.state.currentValue
 		}
-		let component =  <input type="text" {...properties} style = {inputStyle}/>
+		let component =  <input type="text" {...properties} style = {style}/>
 		return component;
 	}
 }

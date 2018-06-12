@@ -5,8 +5,7 @@ import * as firebase from 'firebase'
 export const getData = () => {
 	return (dispatch) => {
 
-		if(window.DEBUG && localStorage["redux-store"]) {
-			
+		if(window.DEBUG) {
 			dispatch({
 				type: C.GET_DATA,
 				value: JSON.parse(localStorage["redux-store"])
@@ -323,8 +322,8 @@ export const deleteDialogue = (dialogue) => {
 			});
 			// delete cards
 			let cardsToDelete = Object.keys(dialogue.cards);
-			cardsToDelete.forEach((cardIndex)=>{
-				updates['/cards/'+cardIndex] = null;
+			cardsToDelete.forEach((cardId)=>{
+				updates['/cards/'+cardId] = null;
 			});
 			// finally delete dialogue
 			updates['/dialogues/'+dialogue.id] = null;
@@ -395,14 +394,15 @@ export const addDialogue = (title) => {
 
 // deviceId: the device containing the dialogue (used for linking to new card)
 // dialogueId: the dialogue the new card should be added in
+// linkedCard: the linked card
 // order: the index of the new card 
 
-export const addNewCard = (deviceId, dialogueId, order) => {
+export const addNewCard = (deviceId, dialogueId, linkedCard, order, answerIndex) => {
 
 	return (dispatch) => {
 
 		dispatch(isUpdating(true));
-		let updates = {};
+
 		// get new card key
 		let newCardRef =  window.database.ref('/cards/').push();
 		let newCard = {
@@ -420,21 +420,29 @@ export const addNewCard = (deviceId, dialogueId, order) => {
 			}]
 		};
 
-
+		
 		// add the card first 
 		newCardRef.set(newCard).then((d) => {
 			
 			// change order of other cards
 			window.database.ref("/dialogues/"+dialogueId).once("value", (value) => {
 
-				var cards = value.val().cards;
+				// update linked card
+				let changedCard = Object.assign(linkedCard, {});
+				
+				changedCard.answers[answerIndex].link = newCardRef.key;
+				window.database.ref('/cards/'+changedCard.id).update(changedCard);
 
+
+				var cards = value.val().cards;
+				let newOrder = order + 1;
+				
 				for (var key in cards) {
 					if(cards[key].order >= order + 1) cards[key].order+=1;
 				}
 				cards[newCardRef.key] = {
 					id: newCardRef.key,
-					order: order + 1
+					order: newOrder
 				}
 
 				// update the dialogue cards
@@ -443,7 +451,17 @@ export const addNewCard = (deviceId, dialogueId, order) => {
 				
 				dispatch(isUpdating(false));
 
-				// all done
+
+				dispatch({
+					type: C.CHANGE_CARD,
+					...changedCard
+				});
+
+				console.log({
+					type: C.CHANGE_CARD,
+					...changedCard
+				})
+
 				dispatch({
 					type: C.ADD_CARD,
 					newCard
@@ -533,7 +551,7 @@ export const deleteCard = (dialogueId, cardId, order) => {
 }
 
 
-export const changeCard = (cardIndex, title, answers, isImage, imageFilename, imageURL) => {
+export const changeCard = (cardId, title, answers, isImage, imageFilename, imageURL) => {
 
 	return (dispatch) => {
 
@@ -544,7 +562,7 @@ export const changeCard = (cardIndex, title, answers, isImage, imageFilename, im
 
 		dispatch({
 			type: C.CHANGE_CARD,
-			cardIndex,
+			cardId,
 			isImage,
 			imageFilename,
 			imageURL,
@@ -557,10 +575,10 @@ export const changeCard = (cardIndex, title, answers, isImage, imageFilename, im
 		if(changeCardTimeout) clearInterval(changeCardTimeout);
 		if(new Date() - lastChanged < 1000) {
 			changeCardTimeout = setTimeout(()=>{
-				changeCardOnDB(dispatch, cardIndex,title,isImage,imageFilename,imageURL,answers) 
+				changeCardOnDB(dispatch, cardId,title,isImage,imageFilename,imageURL,answers) 
 			}, 1000);
 		} else {
-			changeCardOnDB(dispatch, cardIndex,title,isImage,imageFilename,imageURL,answers) 
+			changeCardOnDB(dispatch, cardId,title,isImage,imageFilename,imageURL,answers) 
 		}
 
 	}
@@ -570,13 +588,13 @@ export const changeCard = (cardIndex, title, answers, isImage, imageFilename, im
 let changeCardTimeout;
 let lastChanged;
 
-const changeCardOnDB = (dispatch, cardIndex,title,isImage,imageFilename,imageURL,answers)=> {
+const changeCardOnDB = (dispatch, cardId,title,isImage,imageFilename,imageURL,answers)=> {
 
 	dispatch(isUpdating(true))
 	
 	lastChanged = new Date();
 	const updates = {
-		cardIndex,
+		cardId,
 		title,
 		isImage,
 		imageFilename,
@@ -584,6 +602,6 @@ const changeCardOnDB = (dispatch, cardIndex,title,isImage,imageFilename,imageURL
 		answers
 	}
 
-	window.database.ref('/cards/'+cardIndex).update(updates).then(()=>dispatch(isUpdating(false)));
+	window.database.ref('/cards/'+cardId).update(updates).then(()=>dispatch(isUpdating(false)));
 
 }

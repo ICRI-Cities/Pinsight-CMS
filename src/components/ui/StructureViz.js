@@ -22,7 +22,7 @@ class ResponseViz extends Component {
 
 		var simulation = forceSimulation()
 		.force("link", forceLink().id(function(d) { return d.id; }).strength(0))
-	
+
 		var links = [];
 
 
@@ -62,6 +62,7 @@ class ResponseViz extends Component {
 			data.push({
 				id: -1
 			})
+
 			var link = svg.append("g")
 			.attr("class", "links")
 			.selectAll("line")
@@ -73,26 +74,36 @@ class ResponseViz extends Component {
 
 			var node = svg.append("g")
 			.attr("class", "nodes")
-			.selectAll("circle")
+			.selectAll("g")
 			.data(data)
-			.enter().append("circle")
-			.attr("fill", (d,i )=> {
-				return (i ==0 ? "red" : (d.id !=-1 ? "#ddd" : '#00c7ff'))
-			})
-			.attr("r", 5)
-			.attr("cx", (d,i)=>{
-				d.x = width/2
-				return d.x
-			})
-			.attr("cy", (d,i)=>{
-				d.y =  i *50 + 100
-				return d.y
+			.enter()
+			.append("g")
+			.attr("transform", (d, i)=>{
+				d.x = width/2;
+				d.y =  i *50 + 100;
+				return `translate(${d.x}, ${d.y})`
 			})
 			.call(drag()
 				.on("start", dragstarted)
 				.on("drag", dragged)
 				.on("end", dragended));
 
+
+			node
+			.append("circle")
+			.attr("r", 5)
+			.attr("fill", (d,i )=> {
+				return (i ==0 ? "red" : (d.id !=-1 ? "#ddd" : '#00c7ff'))
+			})
+
+			node
+			.append("text")
+			.text(d=>d.title)
+			.attr("transform", `translate(10,0)`)
+			.style("font-size", ".5rem")
+			
+			
+			
 
 			simulation
 			.nodes(data)
@@ -115,8 +126,9 @@ class ResponseViz extends Component {
 				});
 
 				node
-				.attr("cx", function(d) { return d.x; })
-				.attr("cy", function(d) { return d.y; });
+				.attr("transform", (d)=>{
+					return `translate(${d.x}, ${d.y})`
+				})
 			}
 		}
 
@@ -128,6 +140,8 @@ class ResponseViz extends Component {
 		}
 
 		function dragstarted(d) {
+			console.log(d)
+
 			if (!event.active) simulation.alphaTarget(0.3).restart();
 			d.fx = d.x;
 			d.fy = d.y;
@@ -149,28 +163,28 @@ class ResponseViz extends Component {
 
 	render() {
 
-			return  (
-				<div style={{background:"#ddd"}}>
+		return  (
+			<div style={{background:"#ddd"}}>
 
-				
 
-				<svg style={{position:"absolute", top:0}} ref={(svg)=> {this.svg = svg;} } >
-				<defs>
-				<marker
-				id="darkarrow"
-				markerWidth="5"
-				markerHeight="5"
-				viewBox="0 -5 10 10"
-				orient="auto"
-				>
-				<path d="M0,-5L10,0L0,5" fill={"#333"} />
-				</marker>
 
-				</defs>
-				</svg>
+			<svg style={{position:"absolute", top:0}} ref={(svg)=> {this.svg = svg;} } >
+			<defs>
+			<marker
+			id="darkarrow"
+			markerWidth="5"
+			markerHeight="5"
+			viewBox="0 -5 10 10"
+			orient="auto"
+			>
+			<path d="M0,-5L10,0L0,5" fill={"#333"} />
+			</marker>
 
-				</div>
-				)
+			</defs>
+			</svg>
+
+			</div>
+			)
 
 	}
 }

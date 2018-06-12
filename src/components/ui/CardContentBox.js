@@ -60,7 +60,7 @@ export default class CardContentBox extends Component {
 						rows="4"
 					/>
 					<label 
-						style={{marginBottom: "2rem",color: this.props.card.title.length > 140	? "red"	: "#ddd"}}
+						style={{marginBottom: "2rem",color: this.props.card.title.length > 140	? "red"	: "#8fa3ae"}}
 						>
 						{errorText}
 					</label>

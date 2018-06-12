@@ -19,39 +19,6 @@ All the icons used in the app are from the Material UI library. A reference shee
 
 [http://bit.do/pinsight2](http://bit.do/pinsight2)
 
-### TODO
-
-
-**Danilo**
-remove link!    
-back arrow from viz
-Move viz buttons from device editor to dialogue editor 
-device and date filter buttons in viz
- 
-
-General
-- iPad testing
-
-Visualization
-- Realtime viz?
-
-
-
-**Can**
-- Query db for responses of a defined dialogue
-
-
-**Parked**
-- Add authentication in CMS app (so that users only see their content)
-- Add offline indicator
-
-**Cleaning Up**
-- Nest stylesheet and use inline CSS styling sparingly
-- Decide if parameters in reducers and actions should be object keys
-
-
-
-
 ### To run the app
 
 1. `npm install`
@@ -61,10 +28,11 @@ Visualization
 ### To build the app for deployment
 
 From the repo folder run:  `webpack -p` or `npm run build`
-The app uses webpack for minification and optimization. See `webpack.config.js` for the build settings.
-
+The app uses webpack for minification and optimization. See `webpack.config.js`for the build settings.
 
 ### Firebase
+
+Add your Firebase configuration to `config.js`.
 
 The app is hosted on Firebase at the following address [pinsight-cf45d.firebaseapp.com](https://pinsight-cf45d.firebaseapp.com)
 

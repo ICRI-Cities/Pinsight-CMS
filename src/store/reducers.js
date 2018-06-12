@@ -114,7 +114,7 @@ export const dialogues = (state=null,action) => {
 
 export const cards = (state=null,action) => {
 
-	let cardIndex = action.cardIndex;
+	let cardId = action.cardId;
 	let newState;
 	switch(action.type) {
 
@@ -122,8 +122,8 @@ export const cards = (state=null,action) => {
 		return update(state, {$set: action.value.cards});
 
 		case C.CHANGE_CARD:
-		newState = update(state, {[cardIndex]: {$set: {
-			id: action.cardIndex,
+		newState = update(state, {[cardId]: {$set: {
+			id: action.cardId,
 			title: action.title,
 			answers: action.answers,
 			isImage: action.isImage,

@@ -1,6 +1,7 @@
 import { Component } from "react";
 import LinkHandle from "./LinkHandle";
 import ControlledInput from "./ControlledInput";
+import PlusIcon from "material-ui/svg-icons/content/add-circle";
 
 const ANSWER_LENGTH = 40;
 
@@ -51,17 +52,26 @@ export default class ButtonCombo extends Component {
 		const isLinking = this.props.isLinking;
 		const isLinkingThisAnswer = this.props.selectedCardId == this.props.card.id && this.props.linkingAnswerIndex == this.state.answerIndex;
 		const isFirst = this.props.answerIndex == 0;
+		
+		let inputStyle = {};
+		if(this.state.answerIndex == 0) {
+			inputStyle.marginLeft = "1rem";
+		} else {
+			inputStyle.marginRight = "1rem";
+		}
 
 		return (
-			<div id={"answer"+this.props.answerIndex} onTouchTap={this.onSelectCard}>
+			<div id={"answer"+this.props.answerIndex}  onTouchTap={this.onSelectCard}>
 				<div className="FieldContainer" style={{position:"relative"}} >
 					<ControlledInput
+					style = {inputStyle}
 					onChange={this.onLabelChange}
 					label={this.props.label}
 					/>
-					<LinkHandle isFirst={ isFirst } onTouchTap={this.onLinkClicked} className="LinkHandle"/>	
+					<LinkHandle isLinking={isLinkingThisAnswer} isFirst={ isFirst } onAddLink={this.onLinkClicked} onAddCard={()=>this.props.onAdd(this.props.answerIndex)} className="LinkHandle"/>
+
 				</div>
-				<label style={{ color: len < 0 ? "red" : "#ddd" }}>
+				<label style={{ color: len < 0 ? "red" : "#8fa3ae" }}>
 					{errorText}
 				</label>
 			</div>

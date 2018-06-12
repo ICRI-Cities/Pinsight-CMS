@@ -14,13 +14,17 @@ import {
 const mapStateToProps = (state, props) => {
 	if (!state.hasLoaded) return;
 	const dialogue = state.dialogues[props.params.dialogue];
-	let cards = Object.keys(dialogue.cards).map(key => {
+	let dialogueCards = Object.keys(dialogue.cards).map(key => {
 		return dialogue.cards[key];
 	});
-	cards.sort((a,b)=> {return a.order - b.order})
-	cards = cards.map((card)=> {
-		return state.cards[card.id]
-	})
+
+	dialogueCards.sort((a,b)=> {return a.order - b.order});
+	
+	let cards  = dialogueCards.map((card)=> {
+		let c = state.cards[card.id];
+		c.index = card.order;
+		return c;
+	});
 
 
 	const allCards = state.cards;
@@ -41,12 +45,12 @@ const mapDispatchToProps = (dispatch, props) => {
 
 	return {
 		
-		onChangedCard({ cardIndex, title, answers, isImage, imageFilename, imageURL }) {
-			dispatch(changeCard(cardIndex, title, answers,  isImage, imageFilename, imageURL));
+		onChangedCard({ cardId, title, answers, isImage, imageFilename, imageURL }) {
+			dispatch(changeCard(cardId, title, answers,  isImage, imageFilename, imageURL));
 		},
 
-		onAddCard({order}) {
-			dispatch(addNewCard(deviceId, dialogueId, order));
+		onAddCard({linkedCard, order, answerIndex}) {
+			dispatch(addNewCard(deviceId, dialogueId, linkedCard, order, answerIndex));
 		},
 
 		onDeleteCard({ cardId, order }) {

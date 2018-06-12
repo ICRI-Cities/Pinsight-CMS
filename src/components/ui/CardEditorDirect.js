@@ -18,7 +18,7 @@ export default class CardEditorDirect extends Component {
 		this.state = {
 			isImage: props.card.isImage,
 			imageURL: props.card.imageURL,
-			cardIndex: props.card.id,
+			cardId: props.card.id,
 			title: props.card.title,
 			answers: props.card.answers
 		};
@@ -38,7 +38,7 @@ export default class CardEditorDirect extends Component {
 			isImage: this.state.isImage,
 			imageURL: this.state.imageURL,
 			imageFilename: this.state.imageFilename,
-			cardIndex: this.state.cardIndex,
+			cardId: this.state.cardId,
 			title: this.state.title,
 			answers: this.state.answers
 		});
@@ -104,15 +104,14 @@ export default class CardEditorDirect extends Component {
 			<DeleteIcon color="#ddd" />
 			</IconButton>
 			);
-
+		
 		return (
 			
 
 			<div style= {{
 				position: "absolute",
 				width: "100%",
-				filter: "blur("+props.style.blur+"px)",
-				transform: "translate3d(0px, "+ props.style.y +"px, 0px) scale("+props.style.scale+")"
+				transform: `translate3d(0px, ${props.style.y}px, 0px) scale(${props.style.scale})`
 			}}
 			onTouchTap = {this.onSelectCard}
 			>
@@ -120,7 +119,6 @@ export default class CardEditorDirect extends Component {
 
 			
 			<div className={this.getClassName()} id={"card" + props.card.id} > 
-
 
 			<div className="FieldContainer">
 			<CardContentBox card={props.card} 
@@ -138,10 +136,12 @@ export default class CardEditorDirect extends Component {
 				<div key={i} className="ButtonCombo">
 				<ButtonCombo
 				card = {props.card}
+				onAdd = {()=>props.onAddCard({answerIndex: i, linkedCard: this.props.card, order: this.props.index})}
 				onSelectCard = {props.onSelectCard}
 				linkingAnswerIndex = {props.linkingAnswerIndex}
 				onChangeCardAnswer = {this.onChangeCardAnswer}
 				answerIndex={i}
+				selectedCardId = {props.selectedCardId}
 				onLinking = {props.onLinking}
 				label={answer.label}
 				link={answer.link}
@@ -151,16 +151,6 @@ export default class CardEditorDirect extends Component {
 			</div>
 			</div>
 			
-
-			<FlatButton
-			label="Add Card"
-			primary={true}
-			style={{position:"absolute", color: grey500, left:"50%", bottom:0, transform:"translate(-50%,120%)" }}
-			onTouchTap={()=> {props.onAddCard({order: props.index })} }
-			icon={<PlusIcon color= {grey500} />}
-			/>
-
-
 			</div>
 			);
 	}

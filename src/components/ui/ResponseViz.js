@@ -5,6 +5,7 @@ import {extent} from 'd3-array';
 import {scaleLinear} from 'd3-scale';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from "material-ui/RaisedButton";
 
 const RADIUS = 100;
 const CARD_WIDTH = 400;
@@ -69,6 +70,7 @@ class ResponseViz extends Component {
 			card.answers[1].clicks = 0;
 			
 
+
 			// aggregate respones per card
 			for(var i in dialogueResponses) {
 				let response = dialogueResponses[i];
@@ -77,6 +79,7 @@ class ResponseViz extends Component {
 					card.answers[+response.value].clicks++;
 				}
 			}
+			
 
 
 
@@ -162,7 +165,7 @@ class ResponseViz extends Component {
 		const isAbove = targetIndex < sourceIndex;
 		let cornerX = isRight ? 60 : -60;
 
-		let sx = this.width /2 +  (isRight ? CARD_WIDTH/2 : -CARD_WIDTH/2);
+		let sx = this.width /2 +  (isRight ? 1: -1) * CARD_WIDTH/2;
 		let sy = this.getY(sourceIndex) + CARD_HEIGHT*.8;
 		let ty = this.getY(targetIndex) + CARD_HEIGHT*.5;
 
@@ -205,7 +208,7 @@ class ResponseViz extends Component {
 			y:ty
 		},
 		{
-			x:sx,
+			x:sx + 20 * (isRight? 1 : -1),
 			y:ty
 		}
 		];
@@ -213,22 +216,89 @@ class ResponseViz extends Component {
 		return pnts;
 	}
 
+	downloadCsv() {
+		const myfields = ["cardId", "pi_timestamp", "time", "value"]
+		const delimiter = ",";
+
+		let csvContent = myfields.join(delimiter)  + "\r\n";
+		let responseObject = this.props.responses[this.props.dialogue.id];
+
+		Object.keys(responseObject).forEach(function(d){
+			
+			let row = responseObject[d];
+
+			let rowArray = myfields.map(function(dd){
+
+				// added both cardId and id as old cards have a different format
+				let card = this.props.cards.find(d=>d.cardId == row.cardId || d.id == row.cardId);
+				if(!card) {
+					return "null";
+				}
+				if(dd == "cardId") {
+					return `"${card.title}"`;
+				}
+				if(dd == "value") {
+					return `"${card.answers[row[dd]].label}"`;
+				}
+				if(dd == "time") {
+					return new Date(row[dd]).toISOString();
+				}
+				return row[dd];
+			}.bind(this))
+
+			csvContent += rowArray.join(delimiter) + "\r\n"; // add carriage return
+
+
+		}.bind(this));
+
+		var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+		var link = document.createElement("a");
+		if (link.download !== undefined) { // feature detection
+			// Browsers that support HTML5 download attribute
+			var url = URL.createObjectURL(blob);
+			link.setAttribute("href", url);
+			link.setAttribute("download", "download.csv");
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+		
+	}
 
 	render() {
 
 		if(!this.props.responses || !this.props.responses[this.props.dialogue.id]) return <div>loading</div>
 
 			return  (
-				<div style={{background:"#ddd"}}>
+				<div style={{width:"100%", height:"100%"}}>
 
+				<RaisedButton
+				style={{position:"absolute", top:"5rem", zIndex:2, right:"2rem"}}
+				primary={true}
+				onClick={this.downloadCsv.bind(this)}
+				label={"download csv"}
+				/>
 				
 				
+				<svg style={{ background:"#ddd", position:"absolute", top:0}} ref={(svg)=> {this.svg = svg;} } width="100%" height="5000">
+				<defs>
+				<marker
+				id="darkarrow"
+				markerWidth="5"
+				markerHeight="5"
+				viewBox="0 -5 10 10"
+				orient="auto"
+				>
+				<path d="M0,-5L10,0L0,5" fill={"#333"} />
+				</marker>
+
+				</defs>
+				</svg>
 
 				<div ref={(el)=>this.container=el} style={{width: 600, position: "relative", margin: "auto"}}>
 				
-
-
-
 				{ this.props.cards.map((card,i)=>(
 
 					<div key={card.id} className="node" style={{width:CARD_WIDTH, height:CARD_HEIGHT*.9, position: "absolute", left: "50%", transform: "translate(-50%, " + this.getY(i) +"px)"}} >
@@ -244,30 +314,13 @@ class ResponseViz extends Component {
 				<div className="node" style={{width:CARD_WIDTH,height:CARD_HEIGHT*.9, position: "absolute", left: "50%", transform: "translate(-50%, " + this.getY(this.props.cards.length) +"px)"}} >
 				<p>End</p>
 				</div>
-
 				</div>
 
 
-				<svg style={{position:"absolute", top:0}} ref={(svg)=> {this.svg = svg;} } width="100%" height="5000">
-				<defs>
-				<marker
-				id="darkarrow"
-				markerWidth="5"
-				markerHeight="5"
-				viewBox="0 -5 10 10"
-				orient="auto"
-				>
-				<path d="M0,-5L10,0L0,5" fill={"#333"} />
-				</marker>
-
-				</defs>
-
-
-
-				</svg>
+				
 
 				<div style={{position:"absolute", top: "4rem", left: "2rem"}}>
-			
+
 				<br/>
 				<p><b>{Object.keys(this.props.responses[this.props.dialogue.id]).length}</b> clicks</p>
 

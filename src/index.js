@@ -21,7 +21,7 @@ injectTapEventPlugin()
 const store = storeFactory({isUpdating:true});
 
 
-window.DEBUG = true;
+window.DEBUG = false;
 window.store = store;
 window.React = React;
 
@@ -57,4 +57,4 @@ render(
 	</Provider>
 	,
 	document.getElementById('react-container')
-	)
+	)	

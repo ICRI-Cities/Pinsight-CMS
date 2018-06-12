@@ -8,6 +8,7 @@ const mapStateToProps = (state, props) => {
 	// console.log(device)
 	let dialogues = [];
 	if(device.dialogues && Object.keys(device.dialogues).length){
+
 		for(let id in device.dialogues) {
 			let dialogue = state.dialogues[id];
 			dialogue.order = device.dialogues[id].order;

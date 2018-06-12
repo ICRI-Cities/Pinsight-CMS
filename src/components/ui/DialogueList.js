@@ -10,6 +10,7 @@ import GraphIcon from 'material-ui/svg-icons/editor/linear-scale';
 import DownloadIcon from 'material-ui/svg-icons/action/get-app';
 import EyeIcon from 'material-ui/svg-icons/image/remove-red-eye';
 import IconButton from 'material-ui/IconButton';
+import DataIcon from "material-ui/svg-icons/av/equalizer";
 
 
 class DialogueList extends Component {
@@ -46,9 +47,10 @@ class DialogueList extends Component {
 					<Link activeClassName="active" to={"/dialogues/"+dialogue.id}>
 						{dialogue.title + " ("+Object.keys(dialogue.cards).length+" cards)"}
 					</Link>
-					<IconButton><Link  to={"/dialogues/"+dialogue.id+"/structure"}><GraphIcon/></Link></IconButton>
-					<IconButton onTouchTap={(e)=>this.onDownloadData(dialogue)}><DownloadIcon/> </IconButton>
-					<IconButton onTouchTap={(e)=>this.props.onDeleteDialogue(dialogue)}><DeleteIcon/> </IconButton>
+					<IconButton tooltip ="responses"><Link to={`/dialogues/${dialogue.id}/viz`} > <DataIcon/></Link></IconButton>
+					<IconButton tooltip ="structure"><Link  to={"/dialogues/"+dialogue.id+"/structure"}><GraphIcon/></Link></IconButton>
+					<IconButton tooltip ="download dialogue" onTouchTap={(e)=>this.onDownloadData(dialogue)}><DownloadIcon/> </IconButton>
+					<IconButton tooltip ="delete" onTouchTap={(e)=>this.props.onDeleteDialogue(dialogue)}><DeleteIcon/> </IconButton>
 				</li>
 				)
 		});

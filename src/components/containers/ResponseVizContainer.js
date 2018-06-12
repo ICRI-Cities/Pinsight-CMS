@@ -11,6 +11,7 @@ const mapStateToProps = (state, props) => {
 	let cards = Object.keys(dialogue.cards).map(key => {
 		return state.cards[key];
 	});
+
 	return {
 		dialogue,
 		cards,

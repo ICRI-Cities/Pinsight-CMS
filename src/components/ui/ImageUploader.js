@@ -25,7 +25,9 @@ export default class ImageUploader extends Component {
 
   handleUploadSuccess(filename) {
     this.setState({image: filename, progress: 100, isUploading: false});
+    console.log("upload success")
     firebase.storage().ref('images').child(filename).getDownloadURL().then(url => {
+    console.log(filename)
       this.props.onChangeImage({filename, url});
     });
   };

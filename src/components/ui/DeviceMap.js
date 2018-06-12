@@ -22,15 +22,15 @@ const GoogleMapComponent = withGoogleMap( props => {
 	return(
 
 		<GoogleMap
-			ref={(el)=> {props.onMapLoad(el)}}
-			defaultZoom={14}
-			center={props.markers[0].position}
-			defaultOptions={{ 
-				styles: paleMapStyle, 
-				disableDefaultUI: true,
-				zoomControl: true,
-				scrollwheel: false
-			}}
+		ref={(el)=> {props.onMapLoad(el)}}
+		defaultZoom={14}
+		center={props.markers[0].position}
+		defaultOptions={{ 
+			styles: paleMapStyle, 
+			disableDefaultUI: true,
+			zoomControl: true,
+			scrollwheel: false
+		}}
 		>
 		{
 			props.markers.map( (marker, index) => {
@@ -45,61 +45,61 @@ const GoogleMapComponent = withGoogleMap( props => {
 				return (
 
 					<Marker
-						position = {markerPos}
-						icon = {{
-							url:  iconURL,
-							scaledSize: new google.maps.Size(50, 68)
-						}}
-						ref= {isCurrentMarker ? props.onCurrentMarkerLoaded : null}
-						draggable = {draggable}
-						key = {index}
-						defaultAnimation = "2"
-						onClick = { () => props.onMarkerClick(marker) }
+					position = {markerPos}
+					icon = {{
+						url:  iconURL,
+						scaledSize: new google.maps.Size(50, 68)
+					}}
+					ref= {isCurrentMarker ? props.onCurrentMarkerLoaded : null}
+					draggable = {draggable}
+					key = {index}
+					defaultAnimation = "2"
+					onClick = { () => props.onMarkerClick(marker) }
 					>
 
-						{ isCurrentMarker && props.isShowingInfo && (
-							<InfoWindow
-						  			onCloseClick={() => props.onMarkerClose(marker)}>
-							    <div className="infowindow_content">
-								  	<h2>{marker.name}</h2>
-								  	<div className="infowindow_buttons">
-									  	<FlatButton
-									  			id="PlayButton"
-									  			label="Play"
-									  			labelPosition="before"
-									  			onClick={ () => props.onPlayButtonClick(marker) }>
-											<PlayIcon color="gray"/>
-									    </FlatButton>
-										<hr />
-								  		<FlatButton
-									  			id="EditButton"
-									  			label="Edit"
-									  			labelPosition="before"
-									  			onClick={ () => hashHistory.push("/devices/"+marker.id) }>
-											<EditIcon color="gray"/>
-										</FlatButton>
-										<hr />
-									  	<FlatButton
-									  			id="MoveButton"
-									  			label="Move"
-									  			labelPosition="before"
-									  			onClick = { () => props.onMoveButtonClick(marker) }>
-											<MoveIcon color="gray"/>
-										</FlatButton>
-								  	</div>
-								</div>
-							</InfoWindow>
+					{ isCurrentMarker && props.isShowingInfo && (
+						<InfoWindow
+						onCloseClick={() => props.onMarkerClose(marker)}>
+						<div className="infowindow_content">
+						<h2>{marker.name}</h2>
+						<div className="infowindow_buttons">
+						<FlatButton
+						id="PlayButton"
+						label="Play"
+						labelPosition="before"
+						onClick={ () => props.onPlayButtonClick(marker) }>
+						<PlayIcon color="gray"/>
+						</FlatButton>
+						<hr />
+						<FlatButton
+						id="EditButton"
+						label="Edit"
+						labelPosition="before"
+						onClick={ () => hashHistory.push("/devices/"+marker.id) }>
+						<EditIcon color="gray"/>
+						</FlatButton>
+						<hr />
+						<FlatButton
+						id="MoveButton"
+						label="Move"
+						labelPosition="before"
+						onClick = { () => props.onMoveButtonClick(marker) }>
+						<MoveIcon color="gray"/>
+						</FlatButton>
+						</div>
+						</div>
+						</InfoWindow>
 						)}
 
 					</Marker>
-				)
+					)
 			}
 
 			)
 		}
 		</GoogleMap>
 
-	)
+		)
 });
 
 
@@ -107,12 +107,12 @@ export default class DeviceMap extends Component {
 
 	constructor(props) {
 		super(props);
-	
+		
 
 		this.state = {
 			currentMarker: null,
-	        isPlayingDialogue: false,
-	        isShowingInfo: false,
+			isPlayingDialogue: false,
+			isShowingInfo: false,
 			isDraggingMarker: false
 		};
 	}   
@@ -122,16 +122,16 @@ export default class DeviceMap extends Component {
 		// console.log("Opened the "+targetMarker.name+" infowindow")
 		
 		this.setState({
-		    currentMarker: targetMarker,
-		    isShowingInfo: true
-	    });
+			currentMarker: targetMarker,
+			isShowingInfo: true
+		});
 	}
 
 	handleMarkerClose(targetMarker) {
 		this.setState({
-		    currentMarker: null,
-		    isShowingInfo: false
-	    });
+			currentMarker: null,
+			isShowingInfo: false
+		});
 	}
 
 
@@ -139,16 +139,16 @@ export default class DeviceMap extends Component {
 		// console.log("Clicked on "+targetMarker.name+"'s play button")
 
 		this.setState({
-	        isPlayingDialogue: true
-	    });
+			isPlayingDialogue: true
+		});
 	}
 	handlePlayCloseButtonClick() {
 
 		// console.log("Clicked on "+this.state.currentMarker.name+"'s play close button")
 
 		this.setState({
-	        isPlayingDialogue: false
-	    });
+			isPlayingDialogue: false
+		});
 	}
 
 
@@ -156,10 +156,10 @@ export default class DeviceMap extends Component {
 		// console.log("Clicked on ", targetMarker.position)
 
 		this.setState({
-	        currentMarker: targetMarker,
-		    isShowingInfo: false,
-	        isDraggingMarker: true
-	    });
+			currentMarker: targetMarker,
+			isShowingInfo: false,
+			isDraggingMarker: true
+		});
 	}
 
 
@@ -170,18 +170,22 @@ export default class DeviceMap extends Component {
 		this.props.onChangeDevicePosition(this.state.currentMarker.id, lat,lng);
 
 		this.setState({
-	        currentMarker: null,
-	        isDraggingMarker: false
-	    });
+			currentMarker: null,
+			isDraggingMarker: false
+		});
 
 	}
 
 
 	getDialogues(device) {
 
-		return Object.keys(device.dialogues).map(
-			(val) => this.props.allDialogues[val] 
-		);
+		if(device.dialogues) {
+			return Object.keys(device.dialogues).map(
+				(val) => this.props.allDialogues[val] 
+				);
+		} else {
+			return [];
+		}
 	}
 
 
@@ -210,53 +214,53 @@ export default class DeviceMap extends Component {
 
 		return (
 			<div id="DeviceMap-Map-Container">
-				<GoogleMapComponent
-					ref = "mygmap"
-					containerElement = {
-						<div style={{height:'100%'}} />
-					}
-					mapElement={
-						<div style={{height:'100%'}} />
-					}
-					allCards={this.props.allCards}
-					markers={markers}
-					currentMarker={this.state.currentMarker}
-					isShowingInfo = {this.state.isShowingInfo}
-					isDragging = {this.state.isDraggingMarker}
-					bounds = {this.bounds}
-					onCurrentMarkerLoaded = {this.onCurrentMarkerLoaded.bind(this)}
-					onMapLoad={this.onMapLoad}
-					onMarkerClick = { this.handleMarkerClick.bind(this) }
-					onMarkerClose = { this.handleMarkerClose.bind(this) }
-					onMoveButtonClick = { this.handleMoveButtonClick.bind(this) }
-					onPlayButtonClick = { this.handlePlayButtonClick.bind(this) }
-				/>
-				{
-					this.state.currentMarker && 
-						<DialoguePreview 
-							open={this.state.isPlayingDialogue} 
-							allCards={this.props.allCards} 
-							dialogues={this.getDialogues(this.state.currentMarker)} 
-							onClosePreview={this.handlePlayCloseButtonClick.bind(this)} />
-				}
-				
-				{
-					this.state.isDraggingMarker &&
-						<div id="DeviceMap-Map-Cover">
-							<div id="DeviceMap-Map-Cover-Confirm">
-								<p>Drag the pin where you'd like to move it.</p>
-								<FlatButton
-							  			id="ConfirmMoveButton"
-							  			label="Confirm"
-							  			labelPosition="before"
-							  			secondary={true}
-							  			onClick={ this.handleMarkerConfirmMove.bind(this) }>
-									<ConfirmIcon color="#2196F3" />
-								</FlatButton>
-							</div>
-						</div>
-				}
+			<GoogleMapComponent
+			ref = "mygmap"
+			containerElement = {
+				<div style={{height:'100%'}} />
+			}
+			mapElement={
+				<div style={{height:'100%'}} />
+			}
+			allCards={this.props.allCards}
+			markers={markers}
+			currentMarker={this.state.currentMarker}
+			isShowingInfo = {this.state.isShowingInfo}
+			isDragging = {this.state.isDraggingMarker}
+			bounds = {this.bounds}
+			onCurrentMarkerLoaded = {this.onCurrentMarkerLoaded.bind(this)}
+			onMapLoad={this.onMapLoad}
+			onMarkerClick = { this.handleMarkerClick.bind(this) }
+			onMarkerClose = { this.handleMarkerClose.bind(this) }
+			onMoveButtonClick = { this.handleMoveButtonClick.bind(this) }
+			onPlayButtonClick = { this.handlePlayButtonClick.bind(this) }
+			/>
+			{
+				this.state.currentMarker && 
+				<DialoguePreview 
+				open={this.state.isPlayingDialogue} 
+				allCards={this.props.allCards} 
+				dialogues={this.getDialogues(this.state.currentMarker)} 
+				onClosePreview={this.handlePlayCloseButtonClick.bind(this)} />
+			}
+			
+			{
+				this.state.isDraggingMarker &&
+				<div id="DeviceMap-Map-Cover">
+				<div id="DeviceMap-Map-Cover-Confirm">
+				<p>Drag the pin where you'd like to move it.</p>
+				<FlatButton
+				id="ConfirmMoveButton"
+				label="Confirm"
+				labelPosition="before"
+				secondary={true}
+				onClick={ this.handleMarkerConfirmMove.bind(this) }>
+				<ConfirmIcon color="#2196F3" />
+				</FlatButton>
+				</div>
+				</div>
+			}
 			</div>
-		);
+			);
 	}
 }
