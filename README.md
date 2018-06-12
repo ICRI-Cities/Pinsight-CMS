@@ -127,26 +127,3 @@ The interactive prototype is hosted on InVision at the following URL: [https://p
 ### Assets
 
 Pin icon from [http://www.flaticon.com/free-icon/placeholder_232587#term=location%20pin&page=2&position=59](Flaticon, author Freepik)
-
-### Tests
-
-Device Map
-- Move a Pin
-
-Device Editor
-- Add new/existing dialogue to device
-- Remove dialogue from device
-- Change dialogue order
-- Rename a dialogue
-- Preview a dialogue
-- Update device
-
-Dialogue Editor
-- Create a card
-- Delete a card
-- Change card title
-- Change card answers
-- Add/remove links to next/previous cards
-- Switch image/text
-- Upload image
-
